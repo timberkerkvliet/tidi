@@ -2,7 +2,7 @@ from typing import Optional
 
 from .conditional_values import ConditionalDependencies
 from .composer import Composer
-from .scopetype import Singleton, CustomScope
+from .scopetype import Singleton, CustomScope, ScopeType
 from .resolver import Resolver
 from .scope import Scope
 
@@ -31,7 +31,7 @@ class ScopeManager:
         for scope in self._scopes.values():
             scope.add_composers(composers)
 
-    def get_resolver(self, scope_id: str, scope_type: CustomScope, parent_id: Optional[str] = None) -> Resolver:
+    def get_resolver(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> Resolver:
         if scope_id not in self._scopes:
             self.create_scope(scope_id, scope_type, parent_id)
             return self._scopes[scope_id].resolver()
@@ -42,7 +42,7 @@ class ScopeManager:
 
         return self._scopes[scope_id].resolver()
 
-    def create_scope(self, scope_id: str, scope_type: CustomScope, parent_id: str = ROOT_SCOPE_ID) -> None:
+    def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: str = ROOT_SCOPE_ID) -> None:
         scope = Scope(
             scope_id=scope_id,
             parent=self._scopes[parent_id] if parent_id is not None else None,
