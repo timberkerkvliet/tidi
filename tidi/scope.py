@@ -23,6 +23,11 @@ class Scope:
         self._scope_type = scope_type
         self._composers: ConditionalDependencies[Composer] = ConditionalDependencies.empty()
         self._stored_dependencies: ConditionalDependencies[ConcreteDependency] = ConditionalDependencies.empty()
+        self._validate()
+
+    def _validate(self):
+        if self._scope_type in self.get_ancestor_types():
+            raise Exception(f'Ancestor already has a scope of this type')
 
     def get_id(self) -> str:
         return self._scope_id
@@ -32,6 +37,12 @@ class Scope:
 
     def get_type(self) -> ScopeType:
         return self._scope_type
+
+    def get_ancestor_types(self) -> set[ScopeType]:
+        if self._parent is None:
+            return set()
+
+        return {self._parent.get_type()} | self._parent.get_ancestor_types()
 
     @staticmethod
     def root_scope() -> Scope:

@@ -55,3 +55,9 @@ class ScopeManager:
             raise ValueError('Root scope cannot be destroyed')
 
         del self._scopes[scope_id]
+
+    def destroy_all(self) -> None:
+        self._composers = []
+        self._scopes: dict[str, Scope] = {
+            'root': Scope.root_scope()
+        }

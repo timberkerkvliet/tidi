@@ -8,19 +8,19 @@ class ScopeType(ABC):
         pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Singleton(ScopeType):
     def supports_storing(self) -> bool:
         return True
 
 
-@dataclass
+@dataclass(frozen=True)
 class Transient(ScopeType):
     def supports_storing(self) -> bool:
         return False
 
 
-@dataclass
+@dataclass(frozen=True)
 class CustomScope(ScopeType):
     scope_type: str
 

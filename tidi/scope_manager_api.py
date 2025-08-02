@@ -25,3 +25,7 @@ def ensure_scope(scope_id: str, scope_type: str, parent_id: str = 'root') -> Non
 
 def destroy_scope(scope_id: str) -> None:
     ScopeManager().destroy_scope(scope_id=scope_id)
+
+
+def destroy_all() -> None:
+    ScopeManager().destroy_all()
