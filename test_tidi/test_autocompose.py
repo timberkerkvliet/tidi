@@ -8,6 +8,7 @@ from tidi import scan, get_resolver, destroy_all
 class TestAutoCompose(TestCase):
     def setUp(self) -> None:
         scan(composition_root)
+        scan(composition_root)
         self.resolver = get_resolver()
 
     def tearDown(self) -> None:

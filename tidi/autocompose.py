@@ -33,7 +33,7 @@ def auto_compose(dependency_type: Type, scope_type: str = 'singleton', **kwargs)
     ScopeManager().add_composers(
         [
             Composer(
-                id=str(id(factory)),
+                id=str(id(dependency_type)),
                 scope_type=parse_scope_type(scope_type),
                 conditions=Conditions(
                     conditions={
