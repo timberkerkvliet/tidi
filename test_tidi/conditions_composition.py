@@ -1,39 +1,29 @@
-from dataclasses import dataclass
+from abc import ABC, abstractmethod
 
-from tidi import composer, Resolver
-
-
-@composer
-def age() -> int:
-    return 10
+from tidi import auto_compose, composer
 
 
-@composer(environment={'prod', 'test'})
-def setting() -> float:
-    return 9.9
+class StringGenerator(ABC):
+    @abstractmethod
+    def generate(self) -> str:
+        pass
+
+
+class TimberGenerator(StringGenerator):
+    def generate(self) -> str:
+        return 'Timber'
+
+
+class HelloGenerator(StringGenerator):
+    def generate(self) -> str:
+        return 'Hello'
 
 
 @composer(environment='prod')
-def my_name() -> str:
-    return 'Timber'
-
-
-@composer(environment='prod', anonymous='true')
-def another_name() -> str:
-    return 'Second Name'
+def timber() -> TimberGenerator:
+    return TimberGenerator()
 
 
 @composer(environment='test')
-def my_name_test() -> str:
-    return 'TestTimber'
-
-
-@dataclass
-class Buzz:
-    description: str
-
-
-@composer(environment='prod')
-def buzz(resolve: Resolver) -> Buzz:
-    name = resolve(str)
-    return Buzz(description=f'My name: {name}')
+def hello() -> HelloGenerator:
+    return HelloGenerator()

@@ -27,7 +27,7 @@ class ConditionalDependencies(Generic[T]):
         candidates = [
             conditional_value
             for conditional_value in self._values.values()
-            if issubclass(dependency_type, conditional_value.get_dependency_type())
+            if issubclass(conditional_value.get_dependency_type(), dependency_type)
             and conditional_value.get_conditions().is_fulfilled_by(value_map)
         ]
         if len(candidates) == 1:
