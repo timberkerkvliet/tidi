@@ -18,6 +18,14 @@ class TestResolver(TestCase):
         with self.assertRaises(Exception):
             self.resolver(Animal)
 
+    def test_cannot_get_root_scope_with_other_scope(self):
+        with self.assertRaises(Exception):
+            get_scope(scope_id='root', scope_type='transient')
+
+    def test_cannot_get_root_scope_with_parent(self):
+        with self.assertRaises(Exception):
+            get_scope(scope_id='root', parent_id='other')
+
     def test_create_scope(self):
         resolver = get_scope(scope_id='tenant-a', scope_type='tenant')
         result = resolver(Animal)

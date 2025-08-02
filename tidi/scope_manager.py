@@ -31,16 +31,20 @@ class ScopeManager:
         for scope in self._scopes.values():
             scope.add_composers(composers)
 
-    def get_resolver(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> Resolver:
+    def get_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> Scope:
         if scope_id not in self._scopes:
             self.create_scope(scope_id, scope_type, parent_id)
-            return self._scopes[scope_id].resolver()
+            return self._scopes[scope_id]
 
         existing_scope = self._scopes[scope_id]
         if existing_scope.get_type() != scope_type:
             raise Exception
+        if existing_scope.get_parent() is None and parent_id is not None:
+            raise Exception
+        if existing_scope.get_parent() is not None and existing_scope.get_parent().get_id() != parent_id:
+            raise Exception
 
-        return self._scopes[scope_id].resolver()
+        return self._scopes[scope_id]
 
     def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: str = ROOT_SCOPE_ID) -> None:
         scope = Scope(
