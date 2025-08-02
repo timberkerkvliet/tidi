@@ -1,14 +1,14 @@
 from unittest import TestCase
-from test_tidi.composition_root import scopes
+from test_tidi import scope_composition
 
-from test_tidi.composition_root.scopes import Animal, Hey, User
+from test_tidi.scope_composition import Animal, Hey, User
 
 from tidi import scan, get_resolver, create_scope, ensure_scope, destroy_scope, destroy_all
 
 
 class TestResolver(TestCase):
     def setUp(self) -> None:
-        scan(scopes)
+        scan(scope_composition)
         self.resolver = get_resolver()
 
     def tearDown(self) -> None:

@@ -1,12 +1,12 @@
 from unittest import TestCase
 
-from test_tidi import composition_root
+from test_tidi import conditions_composition
 from tidi import scan, get_resolver, destroy_all
 
 
-class TestNameAndAge(TestCase):
+class TestConditions(TestCase):
     def setUp(self) -> None:
-        scan(composition_root)
+        scan(conditions_composition)
         self.resolver = get_resolver()
 
     def tearDown(self) -> None:

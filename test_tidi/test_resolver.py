@@ -1,13 +1,13 @@
 from unittest import TestCase
-from test_tidi import composition_root
-from test_tidi.composition_root.some import Buzz
+from test_tidi import resolver_composition
+from test_tidi.resolver_composition import Buzz
 
 from tidi import scan, get_resolver, destroy_all
 
 
 class TestResolver(TestCase):
     def setUp(self) -> None:
-        scan(composition_root)
+        scan(resolver_composition)
         self.resolver = get_resolver()
 
     def tearDown(self) -> None:

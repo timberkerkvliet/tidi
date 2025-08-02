@@ -1,14 +1,14 @@
 from unittest import TestCase
 
-from test_tidi import composition_root
-from test_tidi.composition_root.autocompose import PointWrapper, Point
+from test_tidi import autocompose_composition
+from test_tidi.autocompose_composition import PointWrapper, Point
 from tidi import scan, get_resolver, destroy_all
 
 
 class TestAutoCompose(TestCase):
     def setUp(self) -> None:
-        scan(composition_root)
-        scan(composition_root)
+        scan(autocompose_composition)
+        scan(autocompose_composition)
         self.resolver = get_resolver()
 
     def tearDown(self) -> None:
