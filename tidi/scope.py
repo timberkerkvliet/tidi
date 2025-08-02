@@ -46,8 +46,11 @@ class Scope:
 
     def create(self, dependency_type: Type[T], value_map: dict[str, str]) -> T:
         composer = self._composers.find(dependency_type, value_map)
-        if composer is None:
+        if composer is None and self._parent is None:
             raise Exception('No composer found')
+        if composer is None:
+            return self._parent.create(dependency_type, value_map)
+
         dependency = composer.create(self.resolver(value_map))
         if composer.scope_type.supports_storing():
             self._stored_dependencies = self._stored_dependencies.add(dependency)
