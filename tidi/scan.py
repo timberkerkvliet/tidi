@@ -20,8 +20,8 @@ def scan(package):
                 try:
                     mod = importlib.import_module(modname)
                     yield mod
-                except Exception as e:
-                    print(f"Error importing {modname}: {e}")
+                except Exception:
+                    pass
 
     # Add the package module itself
     try:
