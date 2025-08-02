@@ -21,3 +21,7 @@ def ensure_scope(scope_id: str, scope_type: str, parent_id: str = 'root') -> Non
     if not isinstance(scope_type, CustomScope):
         raise ValueError
     ScopeManager().ensure_scope(scope_id=scope_id, scope_type=scope_type, parent_id=parent_id)
+
+
+def destroy_scope(scope_id: str) -> None:
+    ScopeManager().destroy_scope(scope_id=scope_id)

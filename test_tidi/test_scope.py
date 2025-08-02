@@ -2,7 +2,7 @@ from unittest import TestCase
 from test_tidi import composition_root
 from test_tidi.composition_root.scopes import Animal
 
-from tidi import scan, get_resolver, create_scope, ensure_scope
+from tidi import scan, get_resolver, create_scope, ensure_scope, destroy_scope
 
 
 class TestResolver(TestCase):
@@ -41,3 +41,10 @@ class TestResolver(TestCase):
 
         with self.assertRaises(Exception):
             ensure_scope(scope_id='tenant-a', scope_type='iets')
+
+    def test_destroy_scope(self):
+        ensure_scope(scope_id='tenant-a', scope_type='tenant')
+        destroy_scope(scope_id='tenant-a')
+
+        with self.assertRaises(Exception):
+            get_resolver('tenant-a')
