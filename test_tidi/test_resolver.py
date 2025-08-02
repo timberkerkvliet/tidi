@@ -14,12 +14,12 @@ class TestResolver(TestCase):
         clear_all_scopes()
 
     def test_buzz(self):
-        result = self.resolver(Buzz, environment='prod')
+        result = self.resolver(Buzz)
 
         self.assertEqual(result, Buzz('My name: Timber'))
 
     def test_same_instance(self):
-        result_1 = self.resolver(Buzz, environment='prod')
-        result_2 = self.resolver(Buzz, environment='prod')
+        result_1 = self.resolver(Buzz)
+        result_2 = self.resolver(Buzz)
 
         self.assertEqual(id(result_1), id(result_2))

@@ -29,23 +29,22 @@ class AutoFactory:
 
 
 def auto_compose(dependency_type: Type, scope_type: str = 'singleton', **kwargs):
+    if not inspect.isclass(dependency_type):
+        raise ValueError
     factory = AutoFactory(dependency_type)
-    ScopeManager().add_composers(
-        [
-            Composer(
-                id=str(id(dependency_type)),
-                scope_type=parse_scope_type(scope_type),
-                conditions=Conditions(
-                    conditions={
-                        Condition(
-                            key=key,
-                            one_of_values=frozenset(value) if isinstance(value, set) else frozenset({value})
-                        )
-                        for key, value in kwargs.items()
-                    }
-                ),
-                dependency_type=dependency_type,
-                factory=factory
-            )
-        ]
-    )
+    composer = Composer(
+            id=str(id(dependency_type)),
+            scope_type=parse_scope_type(scope_type),
+            conditions=Conditions(
+                conditions={
+                    Condition(
+                        key=key,
+                        one_of_values=frozenset(value) if isinstance(value, set) else frozenset({value})
+                    )
+                    for key, value in kwargs.items()
+                }
+            ),
+            dependency_type=dependency_type,
+            factory=factory
+        )
+    ScopeManager().add_composers([composer])
