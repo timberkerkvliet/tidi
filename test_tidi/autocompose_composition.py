@@ -19,4 +19,10 @@ class PointWrapper:
     point: Point
 
 
+class PointWrapperWrapper:
+    def __init__(self, point_wrapper: PointWrapper):
+        self.point_wrapper = point_wrapper
+
+
 auto_compose(PointWrapper)
+auto_compose(PointWrapperWrapper)
