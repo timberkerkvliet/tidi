@@ -2,17 +2,17 @@ from unittest import TestCase
 
 from test_tidi import autocompose_composition
 from test_tidi.autocompose_composition import PointWrapper, Point
-from tidi import scan, get_resolver, destroy_all
+from tidi import scan, get_scope, clear_all_scopes
 
 
 class TestAutoCompose(TestCase):
     def setUp(self) -> None:
         scan(autocompose_composition)
         scan(autocompose_composition)
-        self.resolver = get_resolver()
+        self.resolver = get_scope()
 
     def tearDown(self) -> None:
-        destroy_all()
+        clear_all_scopes()
 
     def test_no_singleton(self):
         result = self.resolver(PointWrapper)

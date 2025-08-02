@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .conditional_values import ConditionalDependencies
 from .composer import Composer
 from .scopetype import Singleton, CustomScope
@@ -29,11 +31,23 @@ class ScopeManager:
         for scope in self._scopes.values():
             scope.add_composers(composers)
 
-    def get_resolver(self, scope_id: str = ROOT_SCOPE_ID) -> Resolver:
+    def get_resolver(self, scope_id: str, scope_type: CustomScope, parent_id: Optional[str] = None) -> Resolver:
+        if scope_id not in self._scopes:
+            self.create_scope(scope_id, scope_type, parent_id)
+            return self._scopes[scope_id].resolver()
+
+        existing_scope = self._scopes[scope_id]
+        if existing_scope.get_type() != scope_type:
+            raise Exception
+
         return self._scopes[scope_id].resolver()
 
     def create_scope(self, scope_id: str, scope_type: CustomScope, parent_id: str = ROOT_SCOPE_ID) -> None:
-        scope = Scope(scope_id=scope_id, parent=self._scopes[parent_id], scope_type=scope_type)
+        scope = Scope(
+            scope_id=scope_id,
+            parent=self._scopes[parent_id] if parent_id is not None else None,
+            scope_type=scope_type
+        )
         scope.add_composers(self._composers)
 
         if scope_id in self._scopes:
@@ -41,23 +55,8 @@ class ScopeManager:
 
         self._scopes[scope_id] = scope
 
-    def ensure_scope(self, scope_id: str, scope_type: CustomScope, parent_id: str = ROOT_SCOPE_ID) -> None:
-        if scope_id not in self._scopes:
-            self.create_scope(scope_id, scope_type, parent_id)
-            return
-
-        existing_scope = self._scopes[scope_id]
-        if existing_scope.get_type() != scope_type or existing_scope.get_parent().get_id() != parent_id:
-            raise Exception
-
-    def destroy_scope(self, scope_id: str):
-        if scope_id == ScopeManager.ROOT_SCOPE_ID:
-            raise ValueError('Root scope cannot be destroyed')
-
+    def clear_scope(self, scope_id: str):
         del self._scopes[scope_id]
 
-    def destroy_all(self) -> None:
-        self._composers = []
-        self._scopes: dict[str, Scope] = {
-            'root': Scope.root_scope()
-        }
+    def clear_all_scopes(self) -> None:
+        self._scopes: dict[str, Scope] = {}
