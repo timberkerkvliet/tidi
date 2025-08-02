@@ -6,7 +6,7 @@ from .conditional_values import ConditionalDependencies
 from .dependency import ConcreteDependency
 from .composer import Composer
 from .resolver import Resolver
-from .scopetype import ScopeType
+from .scopetype import ScopeType, Singleton
 
 T = TypeVar('T')
 
@@ -14,16 +14,28 @@ T = TypeVar('T')
 class Scope:
     def __init__(
         self,
+        scope_id: str,
         scope_type: ScopeType,
         parent: Optional[Scope] = None
     ):
+        self._scope_id = scope_id
         self._parent = parent
         self._scope_type = scope_type
         self._composers: ConditionalDependencies[Composer] = ConditionalDependencies.empty()
         self._stored_dependencies: ConditionalDependencies[ConcreteDependency] = ConditionalDependencies.empty()
 
+    def get_id(self) -> str:
+        return self._scope_id
+
+    def get_parent(self) -> Scope:
+        return self._parent
+
     def get_type(self) -> ScopeType:
         return self._scope_type
+
+    @staticmethod
+    def root_scope() -> Scope:
+        return Scope(scope_id='root', scope_type=Singleton())
 
     def add_composers(self, composers: list[Composer]) -> None:
         for composer in composers:

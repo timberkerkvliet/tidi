@@ -20,7 +20,7 @@ class ScopeManager:
             return
         self._composers = []
         self._scopes: dict[str, Scope] = {
-            ScopeManager.ROOT_SCOPE_ID: Scope(parent=None, scope_type=Singleton())
+            'root': Scope.root_scope()
         }
         self._initialized = True
 
@@ -32,11 +32,23 @@ class ScopeManager:
     def get_resolver(self, scope_id: str = ROOT_SCOPE_ID) -> Resolver:
         return self._scopes[scope_id].resolver()
 
-    def create_scope(self, scope_id: str, scope_type: CustomScope, parent_id: str = ROOT_SCOPE_ID):
-        scope = Scope(parent=self._scopes[parent_id], scope_type=scope_type)
+    def create_scope(self, scope_id: str, scope_type: CustomScope, parent_id: str = ROOT_SCOPE_ID) -> None:
+        scope = Scope(scope_id=scope_id, parent=self._scopes[parent_id], scope_type=scope_type)
         scope.add_composers(self._composers)
 
+        if scope_id in self._scopes:
+            raise Exception('Scope already exists')
+
         self._scopes[scope_id] = scope
+
+    def ensure_scope(self, scope_id: str, scope_type: CustomScope, parent_id: str = ROOT_SCOPE_ID) -> None:
+        if scope_id not in self._scopes:
+            self.create_scope(scope_id, scope_type, parent_id)
+            return
+
+        existing_scope = self._scopes[scope_id]
+        if existing_scope.get_type() != scope_type or existing_scope.get_parent().get_id() != parent_id:
+            raise Exception
 
     def destroy_scope(self, scope_id: str):
         if scope_id == ScopeManager.ROOT_SCOPE_ID:

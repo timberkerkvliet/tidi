@@ -26,3 +26,12 @@ class CustomScope(ScopeType):
 
     def supports_storing(self) -> bool:
         return True
+
+
+def parse_scope_type(value: str) -> ScopeType:
+    if value == 'singleton':
+        return Singleton()
+    if value == 'transient':
+        return Transient()
+
+    return CustomScope(value)
