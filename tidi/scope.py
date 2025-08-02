@@ -58,7 +58,7 @@ class Scope:
     def create(self, dependency_type: Type[T], value_map: dict[str, str]) -> T:
         composer = self._composers.find(dependency_type, value_map)
         if composer is None and self._parent is None:
-            raise Exception('No composer found')
+            raise Exception(f'No composer found for type {dependency_type}')
         if composer is None:
             return self._parent.create(dependency_type, value_map)
 

@@ -33,6 +33,6 @@ class ConditionalDependencies(Generic[T]):
         if len(candidates) == 1:
             return next(iter(candidates))
         if len(candidates) > 1:
-            raise Exception('More than 1 candidate')
+            raise Exception(f'More than 1 candidate for type {dependency_type}')
 
         return None
