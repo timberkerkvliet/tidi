@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from test_tidi import context_composition
-from test_tidi.context_composition import StringGenerator, HelloGenerator, TimberGenerator
+from test_tidi.context_composition import StringGenerator, HelloGenerator, TimberGenerator, App
 from tidi import scan, get_resolver, reset, add_context
 
 
@@ -39,3 +39,9 @@ class TestContext(TestCase):
         result = self.resolver(TimberGenerator)
 
         self.assertEqual(result.generate(), 'Timber')
+
+    def test_resolve_app(self):
+        add_context(environment='test')
+        app = self.resolver(App)
+
+        self.assertEqual(app.generate(), 'Hello')

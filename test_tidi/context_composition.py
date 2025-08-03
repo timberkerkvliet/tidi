@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from tidi import auto_compose, composer
+from tidi import auto_compose, composer, Resolver
 
 
 class StringGenerator(ABC):
@@ -19,6 +19,14 @@ class HelloGenerator(StringGenerator):
         return 'Hello'
 
 
+class App:
+    def __init__(self, generator: StringGenerator):
+        self._generator = generator
+
+    def generate(self) -> str:
+        return self._generator.generate()
+
+
 @composer(environment='prod')
 def timber() -> TimberGenerator:
     return TimberGenerator()
@@ -27,3 +35,8 @@ def timber() -> TimberGenerator:
 @composer(environment='test')
 def hello() -> HelloGenerator:
     return HelloGenerator()
+
+
+@composer
+def app(resolve: Resolver) -> App:
+    return App(resolve(StringGenerator))
