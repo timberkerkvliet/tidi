@@ -6,7 +6,7 @@ from .dependency_bag import DependencyBag
 from .dependency import ConcreteDependency, Dependency
 from .composer import Composer
 from .resolver import Resolver
-from .scopetype import ScopeType, RootType
+from .scopetype import ScopeType, RootType, Transient
 
 T = TypeVar('T')
 
@@ -32,7 +32,9 @@ class Scope:
         if self._scope_id == 'root' and self._parent is not None:
             raise Exception('Root scope can not have parent')
         if self._scope_type in self.get_ancestor_types():
-            raise Exception(f'Ancestor already has a scope of this type')
+            raise Exception('Ancestor already has a scope of this type')
+        if self._scope_type == Transient():
+            raise Exception('Scopes can not have type transient')
 
     def get_id(self) -> str:
         return self._scope_id
@@ -60,10 +62,6 @@ class Scope:
 
     def get_ancestor_types(self) -> set[ScopeType]:
         return {scope.get_type() for scope in self.get_ancestors()}
-
-    @staticmethod
-    def root_scope() -> Scope:
-        return Scope(scope_id='root', scope_type=RootType())
 
     def add_composers(self, composers: list[Composer]) -> None:
         for composer in composers:

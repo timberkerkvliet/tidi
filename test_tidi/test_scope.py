@@ -98,3 +98,19 @@ class TestResolver(TestCase):
 
         with self.assertRaises(Exception):
             ensure_scope(scope_id='tenant-b', scope_type='tenant', parent_id='tenant-a')
+
+    def test_illegal_ensures(self):
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='tenant-b', scope_type='root')
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='root', scope_type='iets')
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='root', scope_type='root', parent_id='iets')
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='request-a', scope_type='transient')
+
+    def test_cannot_test_scope_of_same_type(self):
+        ensure_scope(scope_id='tenant-a', scope_type='tenant')
+
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='tenant-b', scope_type='tenant', parent_id='tenant-a')
