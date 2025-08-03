@@ -131,3 +131,8 @@ class TestScope(TestCase):
 
         with self.assertRaises(Exception):
             ensure_scope(scope_id='x', scope_type='request')
+
+    def test_transient_dependencies_are_not_stored(self):
+        resolver = get_resolver()
+
+        self.assertNotEqual(resolver(str), resolver(str))

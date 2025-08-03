@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import dataclass
 
 from tidi import composer, Resolver
@@ -31,3 +32,8 @@ class User:
 @composer(scope_type='request')
 def user() -> User:
     return User(id='user')
+
+
+@composer(scope_type='transient')
+def a_random_string() -> str:
+    return str(uuid.uuid4())

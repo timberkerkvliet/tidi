@@ -65,7 +65,7 @@ class Scope:
 
     def add_composers(self, composers: list[Composer]) -> None:
         for composer in composers:
-            if composer.scope_type != self._scope_type:
+            if composer.scope_type.supports_storing() and composer.scope_type != self._scope_type:
                 continue
 
             self._dependency_bag = self._dependency_bag.add(composer)
@@ -79,7 +79,8 @@ class Scope:
             return dependency.value
         if isinstance(dependency, Composer):
             concrete = dependency.create(resolver)
-            self._dependency_bag = self._dependency_bag.add(concrete)
+            if dependency.scope_type.supports_storing():
+                self._dependency_bag = self._dependency_bag.add(concrete)
             return concrete.value
 
         raise Exception
@@ -88,5 +89,8 @@ class Scope:
         result = self._dependency_bag.find(dependency_type, value_map)
         if result is not None:
             return self._get_from_dependency(result, self.resolver(value_map))
+
+        if self._parent is None:
+            raise Exception(f'No candidate for type {dependency_type}')
 
         return self._parent.get(dependency_type, value_map)
