@@ -20,6 +20,7 @@ class ScopeManager:
             return
         self._composers = []
         self._scopes: dict[str, Scope] = {}
+        self.ensure_scope(scope_id='root', scope_type=RootType())
         self._initialized = True
 
     def add_composers(self, composers: list[Composer]) -> None:
@@ -41,12 +42,9 @@ class ScopeManager:
             raise Exception
 
     def get_resolver(self, scope_id: str) -> Resolver:
-        if scope_id == 'root':
-            self.ensure_scope(scope_id='root', scope_type=RootType())
-
         return self._scopes[scope_id].resolver()
 
-    def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: str) -> None:
+    def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> None:
         scope = Scope(
             scope_id=scope_id,
             parent=self._scopes[parent_id] if parent_id is not None else None,
@@ -65,5 +63,9 @@ class ScopeManager:
         for child_id in child_ids:
             self.clear_scope(child_id)
 
+        if scope_id == 'root':
+            self.ensure_scope(scope_id='root', scope_type=RootType())
+
     def clear_all_scopes(self) -> None:
         self._scopes: dict[str, Scope] = {}
+        self.ensure_scope(scope_id='root', scope_type=RootType())

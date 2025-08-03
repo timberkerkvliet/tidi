@@ -6,17 +6,17 @@ from test_tidi.scope_composition import Animal, Hey, User
 from tidi import scan, get_resolver, ensure_scope, clear_scope, clear_all_scopes
 
 
-class TestResolver(TestCase):
+class TestScope(TestCase):
     def setUp(self) -> None:
         scan(scope_composition)
-        self.resolver = get_resolver()
 
     def tearDown(self) -> None:
         clear_all_scopes()
 
-    def test_no_singleton(self):
+    def test_cannot_access_in_root_scope(self):
+        resolver = get_resolver()
         with self.assertRaises(Exception):
-            self.resolver(Animal)
+            resolver(Animal)
 
     def test_cannot_get_root_scope_with_other_scope(self):
         with self.assertRaises(Exception):
@@ -72,7 +72,10 @@ class TestResolver(TestCase):
 
         result = resolver(Hey)
 
+        resolved_from_root = get_resolver()(Hey)
+
         self.assertEqual(Hey(age=17), result)
+        self.assertEqual(id(result), id(resolved_from_root))
 
     def test_can_access_root_scope_after_clearing(self):
         clear_scope('root')
@@ -122,3 +125,9 @@ class TestResolver(TestCase):
 
         with self.assertRaises(Exception):
             ensure_scope(scope_id='tenant-b', scope_type='tenant', parent_id='tenant-a')
+
+    def test_conflicting_scope_types(self):
+        ensure_scope(scope_id='x', scope_type='tenant')
+
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='x', scope_type='request')
