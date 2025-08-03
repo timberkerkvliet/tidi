@@ -3,9 +3,14 @@ from dataclasses import dataclass
 from tidi import composer, Resolver
 
 
-@composer
+@composer(id='timber')
 def my_name() -> str:
     return 'Timber'
+
+
+@composer
+def other_name() -> str:
+    return 'Benji'
 
 
 @dataclass
@@ -15,5 +20,5 @@ class Buzz:
 
 @composer
 def buzz(resolve: Resolver) -> Buzz:
-    name = resolve(str)
+    name = resolve(str, id='timber')
     return Buzz(description=f'My name: {name}')
