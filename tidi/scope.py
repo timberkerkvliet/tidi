@@ -53,11 +53,14 @@ class Scope:
 
         return self._scope_id == other.get_id()
 
-    def get_ancestor_types(self) -> set[ScopeType]:
+    def get_ancestors(self) -> set[Scope]:
         if self._parent is None:
             return set()
 
-        return {self._parent.get_type()} | self._parent.get_ancestor_types()
+        return {self._parent} | self._parent.get_ancestors()
+
+    def get_ancestor_types(self) -> set[ScopeType]:
+        return {scope.get_type() for scope in self.get_ancestors()}
 
     @staticmethod
     def root_scope() -> Scope:

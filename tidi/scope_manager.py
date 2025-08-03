@@ -59,7 +59,10 @@ class ScopeManager:
         self._scopes[scope_id] = scope
 
     def clear_scope(self, scope_id: str):
-        del self._scopes[scope_id]
+        scope = self._scopes.pop(scope_id)
+        ancestors = scope.get_ancestors()
+        for scope in ancestors:
+            self._scopes.pop(scope.get_id())
 
     def clear_all_scopes(self) -> None:
         self._scopes: dict[str, Scope] = {}
