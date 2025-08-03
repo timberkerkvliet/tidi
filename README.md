@@ -4,7 +4,7 @@
 
 TiDI—short for Timber Dependency Injection—is a minimalist, opinionated dependency injection framework created by me, Timber. It emphasizes simplicity, ease of use, and a principled approach to DI.
 
-For detailed API documentation, please see the [API Reference](api.md).
+For detailed API documentation, please see the [API Reference](https://github.com/timberkerkvliet/tidi/blob/main/api.md).
 
 ## In the spirit of real DI
 
