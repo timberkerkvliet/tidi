@@ -1,6 +1,6 @@
 [project]
 name = "tidipy"
-version = "0.1.0"
+version = "0.1.1"
 description = "A minimalist, opinionated dependency injection framework"
 authors = [{ name = "Timber Kerkvliet", email = "timberkerkvliet@gmail.com" }]
 readme = "README.md"
