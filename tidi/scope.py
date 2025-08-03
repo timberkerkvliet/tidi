@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Type, TypeVar, Optional
 
-from .conditional_values import ConditionalDependencies
-from .dependency import ConcreteDependency
+from .dependency_bag import DependencyBag
+from .dependency import ConcreteDependency, Dependency
 from .composer import Composer
 from .resolver import Resolver
 from .scopetype import ScopeType, RootType
@@ -21,8 +21,7 @@ class Scope:
         self._scope_id = scope_id
         self._parent = parent
         self._scope_type = scope_type
-        self._composers: ConditionalDependencies[Composer] = ConditionalDependencies.empty()
-        self._stored_dependencies: ConditionalDependencies[ConcreteDependency] = ConditionalDependencies.empty()
+        self._dependency_bag: DependencyBag = DependencyBag.empty()
         self._validate()
 
     def _validate(self):
@@ -71,38 +70,25 @@ class Scope:
             if composer.scope_type != self._scope_type:
                 continue
 
-            self._composers = self._composers.add(composer)
-
-    def create(self, dependency_type: Type[T], value_map: dict[str, str]) -> T:
-        composer = self._composers.find(dependency_type, value_map)
-        if composer is None and self._parent is None:
-            raise Exception(f'No composer found for type {dependency_type}')
-        if composer is None:
-            return self._parent.create(dependency_type, value_map)
-
-        dependency = composer.create(self.resolver(value_map))
-        if composer.scope_type.supports_storing():
-            self._stored_dependencies = self._stored_dependencies.add(dependency)
-
-        return dependency.value
+            self._dependency_bag = self._dependency_bag.add(composer)
 
     def resolver(self, base_map: dict[str, str] = None) -> Resolver:
         base_map = base_map or {}
         return Resolver(lambda dep_typ, value_map: self.get(dep_typ, {**base_map, **value_map}))
 
+    def _get_from_dependency(self, dependency: Dependency, value_map: dict[str, str]):
+        if isinstance(dependency, ConcreteDependency):
+            return dependency.value
+        if isinstance(dependency, Composer):
+            concrete = dependency.create(self.resolver(value_map))
+            self._dependency_bag = self._dependency_bag.add(concrete)
+            return concrete.value
+
+        raise Exception
+
     def get(self, dependency_type: Type[T], value_map: dict[str, str]) -> T:
-        result = self.find(dependency_type, value_map)
+        result = self._dependency_bag.find(dependency_type, value_map)
         if result is not None:
-            return result
+            return self._get_from_dependency(result, value_map)
 
-        return self.create(dependency_type, value_map)
-
-    def find(self, dependency_type: Type[T], value_map: dict[str, str]) -> Optional[T]:
-        result = self._stored_dependencies.find(dependency_type, value_map)
-        if result is not None:
-            return result.value
-
-        if self._parent is None:
-            return None
-
-        return self._parent.find(dependency_type, value_map)
+        return self._parent.get(dependency_type, value_map)

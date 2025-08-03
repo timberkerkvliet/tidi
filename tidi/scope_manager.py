@@ -42,7 +42,9 @@ class ScopeManager:
             raise Exception
 
     def get_resolver(self, scope_id: str) -> Resolver:
-        self.ensure_scope(scope_id='root', scope_type=RootType())
+        if scope_id == 'root':
+            self.ensure_scope(scope_id='root', scope_type=RootType())
+
         return self._scopes[scope_id].resolver()
 
     def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: str = ROOT_SCOPE_ID) -> None:

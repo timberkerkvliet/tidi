@@ -28,7 +28,12 @@ class TestConditions(TestCase):
 
         self.assertEqual(result.generate(), 'Hello')
 
-    def test_has_multiple(self):
+    def test_cannot_resolve_with_multiple_candidates_after_resolving_one(self):
+        self.resolver(StringGenerator, environment='prod')
+        with self.assertRaises(Exception):
+            self.resolver(StringGenerator)
+
+    def test_cannot_resolve_with_multiple_candidates(self):
         with self.assertRaises(Exception):
             self.resolver(StringGenerator)
 
