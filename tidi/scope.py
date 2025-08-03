@@ -72,7 +72,10 @@ class Scope:
 
     def resolver(self, base_map: dict[str, str] = None) -> Resolver:
         base_map = base_map or {}
-        return Resolver(lambda dep_typ, value_map: self.get(dep_typ, {**base_map, **value_map}))
+        return Resolver(
+            lambda dependency_type, dependency_id, filter_values:
+            self.get(dependency_type, dependency_id, {**base_map, **filter_values})
+        )
 
     def _get_from_dependency(self, dependency: Dependency, resolver: Resolver):
         if isinstance(dependency, ConcreteDependency):
@@ -85,12 +88,12 @@ class Scope:
 
         raise Exception
 
-    def get(self, dependency_type: Type[T], value_map: dict[str, str]) -> T:
-        result = self._dependency_bag.find(dependency_type, value_map)
+    def get(self, dependency_type: Type[T], dependency_id: Optional[str], filter_values: dict[str, str]) -> T:
+        result = self._dependency_bag.find(dependency_type, dependency_id, filter_values)
         if result is not None:
-            return self._get_from_dependency(result, self.resolver(value_map))
+            return self._get_from_dependency(result, self.resolver(filter_values))
 
         if self._parent is None:
             raise Exception(f'No candidate for type {dependency_type}')
 
-        return self._parent.get(dependency_type, value_map)
+        return self._parent.get(dependency_type, dependency_id, filter_values)
