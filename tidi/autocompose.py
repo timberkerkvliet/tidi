@@ -33,7 +33,7 @@ def auto_compose(
     dependency_type: Type,
     *,
     id: Optional[str] = None,
-    scope_type: str = 'singleton',
+    scope_type: str = 'root',
     **kwargs
 ):
     if not inspect.isclass(dependency_type):

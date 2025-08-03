@@ -1,8 +1,8 @@
-## TiDI
+# TiDI
 
 TiDI stands for Timber Dependency Injection. It reflects my personal approach to dependency injection, shaped by my own preferences and insights as its creator.
 
-### True dependency injection
+## True dependency injection
 
 The essence of dependency injection is to invert the direction of dependency: the client specifies what type of dependencies it requires, while someone else decides which concrete instances to provide. Many DI frameworks blur this distinction by introducing configuration logic directly into the client—who should only declare its dependencies, not manage them. While this can seem convenient, it undermines the core value of dependency injection.
 
@@ -26,7 +26,32 @@ auto_compose(MyClient)
 ```
 This allows TiDI to automatically resolve and compose the dependencies in many cases, reducing boilerplate while preserving separation of concerns.
 
-### Resolving dependencies
+## Scopes and lifetime management
+
+Composition isn't just about specifying how dependencies are created and connected—it's also about managing _when_ they are instantiated and cleaned up. Not every object in the dependency graph needs to be created upfront, and clients should stay unaware of the timing or lifecycle of their dependencies.
+
+TiDI handles this through _scopes_. Every composer in TiDI is associated with a scope type—by default, this is `root`. You can assign a custom scope like this:
+```
+@composer(scope_type='request')
+def my_dependency() -> MyDependency:
+    ...
+```
+This means `MyDependency` will only be available within a scope of type `request`. To resolve it during a specific request, you'd do:
+```
+resolver = get_scope(scope_id='my-request', scope_type='request')
+resolver(MyDependency)
+```
+When the request ends, the scope—and any dependencies created within it—can be explicitly cleared:
+```
+clear_scope(scope_id='my-request')
+```
+This ensures that scoped dependencies are properly cleaned up, giving you fine-grained control over object lifetimes.
+
+### A tree of scopes
+
+
+
+## Resolving dependencies
 
 A common scenario in dependency injection is when a client depends on an interface that has multiple implementations. In such cases, the composition logic must decide which concrete implementation to provide.
 ```

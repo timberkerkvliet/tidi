@@ -44,10 +44,10 @@ def composer(
     factory: Optional[Callable] = None,
     *,
     id: Optional[str] = None,
-    scope: str = 'singleton',
+    scope_type: str = 'root',
     **kwargs: str | set[str]
 ):
-    parsed_scope_type = parse_scope_type(scope)
+    parsed_scope_type = parse_scope_type(scope_type)
 
     def inner(func: Callable):
         has_parameter = len(inspect.signature(func).parameters) > 0

@@ -6,7 +6,7 @@ from .conditional_values import ConditionalDependencies
 from .dependency import ConcreteDependency
 from .composer import Composer
 from .resolver import Resolver
-from .scopetype import ScopeType, Singleton
+from .scopetype import ScopeType, RootType
 
 T = TypeVar('T')
 
@@ -46,7 +46,7 @@ class Scope:
 
     @staticmethod
     def root_scope() -> Scope:
-        return Scope(scope_id='root', scope_type=Singleton())
+        return Scope(scope_id='root', scope_type=RootType())
 
     def add_composers(self, composers: list[Composer]) -> None:
         for composer in composers:

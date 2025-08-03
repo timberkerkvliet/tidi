@@ -18,7 +18,7 @@ def hey() -> Hey:
     return Hey(17)
 
 
-@composer(scope='tenant')
+@composer(scope_type='tenant')
 def animal() -> Animal:
     return Animal(name='Henk')
 
@@ -28,6 +28,6 @@ class User:
     id: str
 
 
-@composer(scope='request')
+@composer(scope_type='request')
 def user() -> User:
     return User(id='user')

@@ -9,7 +9,7 @@ class ScopeType(ABC):
 
 
 @dataclass(frozen=True)
-class Singleton(ScopeType):
+class RootType(ScopeType):
     def supports_storing(self) -> bool:
         return True
 
@@ -29,8 +29,8 @@ class CustomScope(ScopeType):
 
 
 def parse_scope_type(value: str) -> ScopeType:
-    if value == 'singleton':
-        return Singleton()
+    if value == 'root':
+        return RootType()
     if value == 'transient':
         return Transient()
 
