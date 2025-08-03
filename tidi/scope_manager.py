@@ -7,7 +7,6 @@ from .resolver import Resolver
 
 
 class ScopeManager:
-    ROOT_SCOPE_ID = 'root'
     _instance = None
     _initialized = False
 
@@ -47,7 +46,7 @@ class ScopeManager:
 
         return self._scopes[scope_id].resolver()
 
-    def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: str = ROOT_SCOPE_ID) -> None:
+    def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: str) -> None:
         scope = Scope(
             scope_id=scope_id,
             parent=self._scopes[parent_id] if parent_id is not None else None,

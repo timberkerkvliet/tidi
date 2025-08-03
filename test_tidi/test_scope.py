@@ -46,8 +46,8 @@ class TestResolver(TestCase):
 
     def test_ensure_twice(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
-
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
+
         resolver = get_resolver('tenant-a')
         result = resolver(Animal)
 
@@ -66,9 +66,17 @@ class TestResolver(TestCase):
         with self.assertRaises(Exception):
             ensure_scope('tenant-a')
 
-    def test_can_access_root_scope(self):
+    def test_can_access_root_scope_from_child(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
         resolver = get_resolver('tenant-a')
+
+        result = resolver(Hey)
+
+        self.assertEqual(Hey(age=17), result)
+
+    def test_can_access_root_scope_after_clearing(self):
+        clear_scope('root')
+        resolver = get_resolver()
 
         result = resolver(Hey)
 
