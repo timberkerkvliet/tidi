@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import inspect
 from dataclasses import dataclass
-from typing import Generic, TypeVar, Callable, Any, Type, get_type_hints, Optional
+from typing import TypeVar, Callable, Type, get_type_hints, Optional
 
-from .dependency import Dependency, ConcreteDependency
 from .conditions import Conditions, Condition
+from .dependency import Dependency, ConcreteDependency
 from .resolver import Resolver
-from .scopetype import ScopeType, Singleton, Transient, CustomScope
+from .scopetype import ScopeType, parse_scope_type
 
 T = TypeVar('T')
 
@@ -40,18 +40,19 @@ class Composer(Dependency):
         )
 
 
-def composer(factory: Optional[Callable] = None, *, scope: str = 'singleton', **kwargs: str | set[str]):
-    if scope == 'singleton':
-        parsed_scope_type = Singleton()
-    elif scope == 'transient':
-        parsed_scope_type = Transient()
-    else:
-        parsed_scope_type = CustomScope(scope)
+def composer(
+    factory: Optional[Callable] = None,
+    *,
+    dependency_id: Optional[str] = None,
+    scope: str = 'singleton',
+    **kwargs: str | set[str]
+):
+    parsed_scope_type = parse_scope_type(scope)
 
-    def inner(func):
+    def inner(func: Callable):
         has_parameter = len(inspect.signature(func).parameters) > 0
         return Composer(
-            id=str(id(func)),
+            id=str(id(func)) if dependency_id is None else dependency_id,
             scope_type=parsed_scope_type,
             conditions=Conditions(
                 conditions={
