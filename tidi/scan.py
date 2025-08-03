@@ -3,7 +3,7 @@ import inspect
 from pathlib import Path
 
 from .composer import Composer
-from .scope_manager import ScopeManager
+from .scope_manager import scope_manager
 
 
 def scan(package):
@@ -39,4 +39,4 @@ def scan(package):
             if isinstance(obj, Composer):
                 composers.append(obj)
 
-    ScopeManager().add_composers(composers)
+    scope_manager.add_composers(composers)

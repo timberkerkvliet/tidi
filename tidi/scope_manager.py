@@ -7,21 +7,10 @@ from .resolver import Resolver
 
 
 class ScopeManager:
-    _instance = None
-    _initialized = False
-
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
     def __init__(self):
-        if self._initialized:
-            return
         self._composers = []
         self._scopes: dict[str, Scope] = {}
         self.ensure_scope(scope_id='root', scope_type=RootType())
-        self._initialized = True
 
     def add_composers(self, composers: list[Composer]) -> None:
         self._composers = self._composers + composers
@@ -69,3 +58,6 @@ class ScopeManager:
     def clear_all_scopes(self) -> None:
         self._scopes: dict[str, Scope] = {}
         self.ensure_scope(scope_id='root', scope_type=RootType())
+
+
+scope_manager = ScopeManager()
