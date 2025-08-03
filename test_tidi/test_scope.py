@@ -85,6 +85,14 @@ class TestResolver(TestCase):
         self.assertEqual(User(id='user'), user_result)
         self.assertEqual(Hey(age=17), hey_result)
 
+    def test_destroy_child_scopes(self):
+        ensure_scope(scope_id='tenant-a', scope_type='tenant')
+        ensure_scope(scope_id='request-b', scope_type='request', parent_id='tenant-a')
+        clear_scope('tenant-a')
+
+        with self.assertRaises(Exception):
+            get_resolver('request-b')
+
     def test_cannot_nest_same_type(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
 
