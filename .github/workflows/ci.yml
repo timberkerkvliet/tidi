@@ -6,7 +6,7 @@ on:
       - main  # or whichever branch you want to watch
 
 jobs:
-  publish:
+  main:
     runs-on: ubuntu-latest
 
     steps:
