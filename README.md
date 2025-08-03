@@ -1,8 +1,10 @@
 # TiDI
 
-TiDI stands for Timber Dependency Injection. It reflects my personal approach to dependency injection, shaped by my own preferences and insights as its creator.
+## Intro
 
-## True dependency injection
+TiDI—short for Timber Dependency Injection—is a minimalist, opinionated dependency injection framework that stays true to the original spirit of DI.
+
+## In the spirit of real DI
 
 The essence of dependency injection is to invert the direction of dependency: the client specifies what type of dependencies it requires, while someone else decides which concrete instances to provide. Many DI frameworks blur this distinction by introducing configuration logic directly into the client—who should only declare its dependencies, not manage them. While this can seem convenient, it undermines the core value of dependency injection.
 
