@@ -2,7 +2,7 @@
 
 ## Intro
 
-TiDI—short for Timber Dependency Injection—is a minimalist, opinionated dependency injection framework that stays true to the original spirit of DI.
+TiDI—short for Timber Dependency Injection—is a minimalist, opinionated dependency injection framework created by me, Timber. It emphasizes simplicity, ease of use, and a principled approach to DI.
 
 ## In the spirit of real DI
 
