@@ -26,6 +26,12 @@ class Scope:
         self._validate()
 
     def _validate(self):
+        if self._scope_id == 'root' and self._scope_type != RootType():
+            raise Exception('Only root scope can have root type')
+        if self._scope_id != 'root' and self._scope_type == RootType():
+            raise Exception('Only root scope can have root type')
+        if self._scope_id == 'root' and self._parent is not None:
+            raise Exception('Root scope can not have parent')
         if self._scope_type in self.get_ancestor_types():
             raise Exception(f'Ancestor already has a scope of this type')
 
@@ -37,6 +43,15 @@ class Scope:
 
     def get_type(self) -> ScopeType:
         return self._scope_type
+
+    def __hash__(self) -> int:
+        return hash(self._scope_id)
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Scope):
+            return False
+
+        return self._scope_id == other.get_id()
 
     def get_ancestor_types(self) -> set[ScopeType]:
         if self._parent is None:
