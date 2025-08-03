@@ -44,7 +44,7 @@ resolver(MyDependency)
 ```
 When the request ends, the scope—and any dependencies created within it—can be explicitly cleared:
 ```
-clear_scope(scope_id='my-request')
+clear_scope('my-request')
 ```
 This ensures that scoped dependencies are properly cleaned up, giving you fine-grained control over object lifetimes.
 
