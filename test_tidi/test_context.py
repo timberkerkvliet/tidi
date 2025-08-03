@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from test_tidi import context_composition
 from test_tidi.context_composition import StringGenerator, HelloGenerator, TimberGenerator, App
-from tidi import scan, get_resolver, reset, add_context
+from tidi import scan, get_resolver, reset, add_context, ensure_scope
 
 
 class TestContext(TestCase):
@@ -45,3 +45,20 @@ class TestContext(TestCase):
         app = self.resolver(App)
 
         self.assertEqual(app.generate(), 'Hello')
+
+    def test_cannot_change_context(self):
+        add_context(environment='test')
+
+        with self.assertRaises(Exception):
+            add_context(environment='prod')
+
+    def test_adding_context_to_child_scope_does_not_influence_root(self):
+        ensure_scope(scope_id='child', scope_type='child')
+        add_context(scope_id='child', environment='test')
+        root_resolver = get_resolver()
+        child_resolver = get_resolver('child')
+
+        with self.assertRaises(Exception):
+            root_resolver(StringGenerator)
+        with self.assertRaises(Exception):
+            child_resolver(StringGenerator)
