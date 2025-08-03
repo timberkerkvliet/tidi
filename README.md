@@ -38,7 +38,8 @@ def my_dependency() -> MyDependency:
 ```
 This means `MyDependency` will only be available within scopes of type `request`. To resolve it during a specific request, you'd do:
 ```
-resolver = get_scope(scope_id='my-request', scope_type='request')
+ensure_scope(scope_id='my-request', scope_type='request')
+resolver = get_resolver('my-request')
 resolver(MyDependency)
 ```
 When the request ends, the scope—and any dependencies created within it—can be explicitly cleared:
@@ -49,18 +50,29 @@ This ensures that scoped dependencies are properly cleaned up, giving you fine-g
 
 ### A tree of scopes
 
-Every scope has a parent. When not specified, the default parent is `root`. Within a scope, you can access all dependencies of all its ancestors.
+Each scope in the system has a parent scope. If no parent is explicitly defined, the scope defaults to having `root` as its parent. Scopes form a hierarchy, and any scope can access the dependencies registered in its own context as well as those of all its ancestors.
+
+Here's how you can define dependencies in different scopes:
 ```
-auto_compose(DependencyA)
-auto_compose(DependencyB, scope_type='tenant')
-auto_compose(DependencyC, scope_type='request')
+auto_compose(DependencyA)  # Registered in the root scope
+auto_compose(DependencyB, scope_type='tenant')  # Registered in tenant-level scope
+auto_compose(DependencyC, scope_type='request')  # Registered in request-level scope
 ```
 
+Now we can start a request scope _within_ a specific tenant scope:
 ```
-get_scope(scope_id='my-tenant', scope_type='tenant')
-get_scope(scope_id='my-tenant', scope_type='tenant', parent_id='my-tenant')
-```
+ensure_scope(scope_id='my-tenant', scope_type='tenant')  # Create tenant scope
+ensure_scope(scope_id='my-request', scope_type='request', parent_id='my-tenant')  # Create request scope with tenant as parent
 
+resolver = get_resolver('my-request')  # Get a resolver for the request scope
+```
+Once the scopes are in place, you can resolve dependencies from the request scope. The resolver will automatically traverse up the scope hierarchy as needed:
+```
+resolver(DependencyA)  # Resolved from root scope
+resolver(DependencyB)  # Resolved from tenant scope
+resolver(DependencyC)  # Resolved from request scope
+
+```
 ## Resolving dependencies
 
 A common scenario in dependency injection is when a client depends on an interface that has multiple implementations. In such cases, the composition logic must decide which concrete implementation to provide.
