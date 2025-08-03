@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 import inspect
 from dataclasses import dataclass
 from typing import TypeVar, Callable, Type, get_type_hints, Optional
@@ -10,7 +11,6 @@ from .resolver import Resolver
 from .scopetype import ScopeType, parse_scope_type
 
 T = TypeVar('T')
-
 
 FactoryMethod = Callable[[Resolver], T]
 
@@ -43,7 +43,7 @@ class Composer(Dependency):
 def composer(
     factory: Optional[Callable] = None,
     *,
-    dependency_id: Optional[str] = None,
+    id: Optional[str] = None,
     scope: str = 'singleton',
     **kwargs: str | set[str]
 ):
@@ -52,7 +52,7 @@ def composer(
     def inner(func: Callable):
         has_parameter = len(inspect.signature(func).parameters) > 0
         return Composer(
-            id=str(id(func)) if dependency_id is None else dependency_id,
+            id=str(builtins.id(func)) if id is None else id,
             scope_type=parsed_scope_type,
             conditions=Conditions(
                 conditions={

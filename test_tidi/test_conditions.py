@@ -28,8 +28,11 @@ class TestConditions(TestCase):
 
         self.assertEqual(result.generate(), 'Hello')
 
-    def test_can_not_find(self):
+    def test_has_multiple(self):
         with self.assertRaises(Exception):
             self.resolver(StringGenerator)
-        with self.assertRaises(Exception):
-            self.resolver(TimberGenerator)
+
+    def test_can_resolve_specific(self):
+        result = self.resolver(TimberGenerator)
+
+        self.assertEqual(result.generate(), 'Timber')

@@ -1,10 +1,8 @@
 from typing import Optional
 
-from .conditional_values import ConditionalDependencies
 from .composer import Composer
-from .scopetype import Singleton, CustomScope, ScopeType
-from .resolver import Resolver
 from .scope import Scope
+from .scopetype import ScopeType
 
 
 class ScopeManager:

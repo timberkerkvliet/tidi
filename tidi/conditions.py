@@ -8,7 +8,7 @@ class Condition:
 
     def is_fulfilled_by(self, value_map: dict[str, str]) -> bool:
         if self.key not in value_map:
-            return False
+            return True
 
         return value_map[self.key] in self.one_of_values
 
