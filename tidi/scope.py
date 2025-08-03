@@ -76,11 +76,11 @@ class Scope:
         base_map = base_map or {}
         return Resolver(lambda dep_typ, value_map: self.get(dep_typ, {**base_map, **value_map}))
 
-    def _get_from_dependency(self, dependency: Dependency, value_map: dict[str, str]):
+    def _get_from_dependency(self, dependency: Dependency, resolver: Resolver):
         if isinstance(dependency, ConcreteDependency):
             return dependency.value
         if isinstance(dependency, Composer):
-            concrete = dependency.create(self.resolver(value_map))
+            concrete = dependency.create(resolver)
             self._dependency_bag = self._dependency_bag.add(concrete)
             return concrete.value
 
@@ -89,6 +89,6 @@ class Scope:
     def get(self, dependency_type: Type[T], value_map: dict[str, str]) -> T:
         result = self._dependency_bag.find(dependency_type, value_map)
         if result is not None:
-            return self._get_from_dependency(result, value_map)
+            return self._get_from_dependency(result, self.resolver(value_map))
 
         return self._parent.get(dependency_type, value_map)
