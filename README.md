@@ -116,19 +116,21 @@ This now means that `resolve(Repository)` will resolve to an `InMemoryRepository
 
 ## Using an identifier
 
+Sometimes, you need multiple composers that return the same type but represent different roles or configurations. By assigning an explicit id to each composer, you can resolve the exact one you need without ambiguity.
 
 ```
-@composer(id='fixed-id')
-def fixed_id() -> UUID:
-    return 'uuid.uuid4()'
+@composer(id='primary-db')
+def primary_connection() -> DatabaseConnection:
+    return DatabaseConnection(dsn='postgresql://primary.db.local')
 
-@composer(id='random-id')
-def random_id() -> UUID:
-    return uuid.uuid4()
+@composer(id='analytics-db')
+def analytics_connection() -> DatabaseConnection:
+    return DatabaseConnection(dsn='postgresql://analytics.db.local')
+```
+Here, both composers return `DatabaseConnection`, but they're configured for different purposes. Resolving `DatabaseConnection` is ambiguous.
 
+Instead, you can resolve them explicitly by ID:
 ```
-You can then resolve it like this:
-```
-resolve(UUID, id='in-memory')
+resolve(DatabaseConnection, id='primary-db')
 ```
 Since IDs are unique, this guarantees an unambiguous resolution.
