@@ -3,7 +3,7 @@ from test_tidi import scope_composition
 
 from test_tidi.scope_composition import Animal, Hey, User
 
-from tidi import scan, get_resolver, ensure_scope, clear_scope, reset
+from tidipy import scan, get_resolver, ensure_scope, clear_scope, reset
 
 
 class TestScope(TestCase):

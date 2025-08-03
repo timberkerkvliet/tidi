@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from tidi import auto_compose, composer, Resolver
+from tidipy import composer, Resolver
 
 
 class StringGenerator(ABC):

@@ -1,7 +1,7 @@
 import uuid
 from dataclasses import dataclass
 
-from tidi import composer, Resolver
+from tidipy import composer, Resolver
 
 
 @dataclass

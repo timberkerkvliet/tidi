@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from tidi import composer, Resolver, auto_compose
+from tidipy import composer, Resolver, auto_compose
 
 
 @dataclass

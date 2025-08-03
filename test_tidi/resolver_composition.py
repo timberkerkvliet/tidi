@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from tidi import composer, Resolver
+from tidipy import composer, Resolver
 
 
 @composer(id='timber')

@@ -2,7 +2,7 @@ from unittest import TestCase
 from test_tidi import resolver_composition
 from test_tidi.resolver_composition import Buzz
 
-from tidi import scan, get_resolver, reset
+from tidipy import scan, get_resolver, reset
 
 
 class TestResolver(TestCase):

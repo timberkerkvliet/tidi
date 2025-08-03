@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from test_tidi import autocompose_composition
 from test_tidi.autocompose_composition import PointWrapper, Point, PointWrapperWrapper
-from tidi import scan, get_resolver, reset, auto_compose
+from tidipy import scan, get_resolver, reset, auto_compose
 
 
 class TestAutoCompose(TestCase):

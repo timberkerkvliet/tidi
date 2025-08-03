@@ -2,11 +2,11 @@ import builtins
 import inspect
 from typing import Type, Optional
 
-from tidi import Resolver
-from tidi.composer import Composer
-from tidi.conditions import Condition, Conditions
-from tidi.scope_manager import scope_manager
-from tidi.scopetype import parse_scope_type
+from tidipy import Resolver
+from tidipy.composer import Composer
+from tidipy.conditions import Condition, Conditions
+from tidipy.scope_manager import scope_manager
+from tidipy.scopetype import parse_scope_type
 
 
 class AutoFactory:

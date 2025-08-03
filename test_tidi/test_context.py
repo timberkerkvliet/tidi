@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from test_tidi import context_composition
 from test_tidi.context_composition import StringGenerator, HelloGenerator, TimberGenerator, App
-from tidi import scan, get_resolver, reset, add_context, ensure_scope
+from tidipy import scan, get_resolver, reset, add_context, ensure_scope
 
 
 class TestContext(TestCase):
