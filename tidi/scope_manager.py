@@ -34,12 +34,15 @@ class ScopeManager:
             raise Exception
 
     def _create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> None:
+        parent = self._scopes[parent_id] if parent_id is not None else None
         scope = Scope(
             scope_id=scope_id,
-            parent=self._scopes[parent_id] if parent_id is not None else None,
+            parent=parent,
             scope_type=scope_type
         )
         scope.add_composers(self._composers)
+        if parent is not None:
+            scope.add_context(parent.get_context().values())
 
         if scope_id in self._scopes:
             raise Exception('Scope already exists')

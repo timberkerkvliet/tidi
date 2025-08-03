@@ -52,6 +52,13 @@ class TestContext(TestCase):
         with self.assertRaises(Exception):
             add_context(environment='prod')
 
+    def test_cannot_change_context_in_child(self):
+        add_context(environment='test')
+        ensure_scope('child', scope_type='child')
+
+        with self.assertRaises(Exception):
+            add_context('child', environment='prod')
+
     def test_adding_context_to_child_scope_does_not_influence_root(self):
         ensure_scope(scope_id='child', scope_type='child')
         add_context(scope_id='child', environment='test')

@@ -75,7 +75,7 @@ resolver(DependencyB)  # Resolved from tenant scope
 resolver(DependencyC)  # Resolved from request scope
 
 ```
-## Resolving dependencies
+## Working with scope context
 
 A common scenario in dependency injection is when a client depends on an interface that has multiple implementations. In such cases, the composition logic must decide which concrete implementation to provide.
 ```
@@ -94,23 +94,7 @@ class PostgresRepository(Repository):
 
 If both `InMemoryRepository` and `PostgresRepository` have their own composers, then the type Repository becomes ambiguous—TiDI won’t know which one to resolve by default.
 
-#### Using an identifier
-
-The most direct way to specify which implementation to use is by assigning an explicit ID:
-```
-@composer(id='in-memory')
-def in_memory_repository() -> InMemoryRepository:
-    return InMemoryRepository()
-```
-You can then resolve it like this:
-```
-resolve(Repository, id='in-memory')
-```
-Since IDs are unique, this guarantees an unambiguous resolution.
-
-#### Using filters
-
-Alternatively, you can use _filters_ — key-value tags that don't need to be unique. This is useful for expressing environment- or context-specific choices.
+You can use _scope context_ — key-value tags that express context-specific choices.
 ```
 @composer(stage='prod')
 def postgres_repository() -> PostgresRepository:
@@ -120,9 +104,31 @@ def postgres_repository() -> PostgresRepository:
 def in_memory_repository() -> InMemoryRepository:
     return InMemoryRepository()
 ```
-Now you can resolve based on the desired context:
+The line `@composer(stage='prod')` means that if the key `stage` is part of the scope context, this composer will only
+be considered if it has value `prod`.
+
+We add context to our scope with:
+```
+add_context(stage='test')
+```
+This now means that `resolve(Repository)` will resolve to an `InMemoryRepository`.
+
+
+## Using an identifier
+
 
 ```
-resolve(Repository, stage='test')
+@composer(id='fixed-id')
+def fixed_id() -> UUID:
+    return 'uuid.uuid4()'
+
+@composer(id='random-id')
+def random_id() -> UUID:
+    return uuid.uuid4()
+
 ```
-This approach offers more flexibility than IDs, allowing multiple components to share the same tags while still enabling targeted resolution.
+You can then resolve it like this:
+```
+resolve(UUID, id='in-memory')
+```
+Since IDs are unique, this guarantees an unambiguous resolution.

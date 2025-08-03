@@ -75,6 +75,9 @@ class Scope:
     def add_context(self, values: dict[str, str]) -> None:
         self._context = self._context.add(values)
 
+    def get_context(self) -> ScopeContext:
+        return self._context
+
     def resolver(self) -> Resolver:
         return Resolver(self.get)
 
