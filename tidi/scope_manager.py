@@ -17,9 +17,12 @@ class ScopeManager:
         for scope in self._scopes.values():
             scope.add_composers(composers)
 
+    def get_resolver(self, scope_id: str) -> Resolver:
+        return self._scopes[scope_id].resolver()
+
     def ensure_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> None:
         if scope_id not in self._scopes:
-            self.create_scope(scope_id, scope_type, parent_id)
+            self._create_scope(scope_id, scope_type, parent_id)
             return
 
         existing_scope = self._scopes[scope_id]
@@ -30,10 +33,7 @@ class ScopeManager:
         if existing_scope.get_parent() is not None and existing_scope.get_parent().get_id() != parent_id:
             raise Exception
 
-    def get_resolver(self, scope_id: str) -> Resolver:
-        return self._scopes[scope_id].resolver()
-
-    def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> None:
+    def _create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> None:
         scope = Scope(
             scope_id=scope_id,
             parent=self._scopes[parent_id] if parent_id is not None else None,
@@ -45,6 +45,9 @@ class ScopeManager:
             raise Exception('Scope already exists')
 
         self._scopes[scope_id] = scope
+
+    def add_context(self, scope_id: str, values: dict[str, str]):
+        self._scopes[scope_id].add_context(values)
 
     def clear_scope(self, scope_id: str):
         deleted_scope = self._scopes.pop(scope_id)

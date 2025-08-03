@@ -6,6 +6,7 @@ from .dependency_bag import DependencyBag
 from .dependency import ConcreteDependency, Dependency
 from .composer import Composer
 from .resolver import Resolver
+from .scope_context import ScopeContext
 from .scopetype import ScopeType, RootType, Transient
 
 T = TypeVar('T')
@@ -22,6 +23,7 @@ class Scope:
         self._parent = parent
         self._scope_type = scope_type
         self._dependency_bag: DependencyBag = DependencyBag.empty()
+        self._context: ScopeContext = ScopeContext.empty()
         self._validate()
 
     def _validate(self):
@@ -70,12 +72,11 @@ class Scope:
 
             self._dependency_bag = self._dependency_bag.add(composer)
 
-    def resolver(self, base_map: dict[str, str] = None) -> Resolver:
-        base_map = base_map or {}
-        return Resolver(
-            lambda dependency_type, dependency_id, filter_values:
-            self.get(dependency_type, dependency_id, {**base_map, **filter_values})
-        )
+    def add_context(self, values: dict[str, str]) -> None:
+        self._context = self._context.add(values)
+
+    def resolver(self) -> Resolver:
+        return Resolver(self.get)
 
     def _get_from_dependency(self, dependency: Dependency, resolver: Resolver):
         if isinstance(dependency, ConcreteDependency):
@@ -88,12 +89,12 @@ class Scope:
 
         raise Exception
 
-    def get(self, dependency_type: Type[T], dependency_id: Optional[str], filter_values: dict[str, str]) -> T:
-        result = self._dependency_bag.find(dependency_type, dependency_id, filter_values)
+    def get(self, dependency_type: Type[T], dependency_id: Optional[str]) -> T:
+        result = self._dependency_bag.find(dependency_type, dependency_id, self._context.values())
         if result is not None:
-            return self._get_from_dependency(result, self.resolver(filter_values))
+            return self._get_from_dependency(result, self.resolver())
 
         if self._parent is None:
             raise Exception(f'No candidate for type {dependency_type}')
 
-        return self._parent.get(dependency_type, dependency_id, filter_values)
+        return self._parent.get(dependency_type, dependency_id)
