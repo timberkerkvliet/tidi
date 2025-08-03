@@ -2,7 +2,8 @@ from typing import Optional
 
 from .composer import Composer
 from .scope import Scope
-from .scopetype import ScopeType
+from .scopetype import ScopeType, RootType
+from .resolver import Resolver
 
 
 class ScopeManager:
@@ -19,9 +20,7 @@ class ScopeManager:
         if self._initialized:
             return
         self._composers = []
-        self._scopes: dict[str, Scope] = {
-            'root': Scope.root_scope()
-        }
+        self._scopes: dict[str, Scope] = {}
         self._initialized = True
 
     def add_composers(self, composers: list[Composer]) -> None:
@@ -29,10 +28,10 @@ class ScopeManager:
         for scope in self._scopes.values():
             scope.add_composers(composers)
 
-    def get_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> Scope:
+    def ensure_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> None:
         if scope_id not in self._scopes:
             self.create_scope(scope_id, scope_type, parent_id)
-            return self._scopes[scope_id]
+            return
 
         existing_scope = self._scopes[scope_id]
         if existing_scope.get_type() != scope_type:
@@ -42,7 +41,9 @@ class ScopeManager:
         if existing_scope.get_parent() is not None and existing_scope.get_parent().get_id() != parent_id:
             raise Exception
 
-        return self._scopes[scope_id]
+    def get_resolver(self, scope_id: str) -> Resolver:
+        self.ensure_scope(scope_id='root', scope_type=RootType())
+        return self._scopes[scope_id].resolver()
 
     def create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: str = ROOT_SCOPE_ID) -> None:
         scope = Scope(

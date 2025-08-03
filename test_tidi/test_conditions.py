@@ -2,13 +2,13 @@ from unittest import TestCase
 
 from test_tidi import conditions_composition
 from test_tidi.conditions_composition import StringGenerator, HelloGenerator, TimberGenerator
-from tidi import scan, get_scope, clear_all_scopes
+from tidi import scan, get_resolver, clear_all_scopes
 
 
 class TestConditions(TestCase):
     def setUp(self) -> None:
         scan(conditions_composition)
-        self.resolver = get_scope()
+        self.resolver = get_resolver()
 
     def tearDown(self) -> None:
         clear_all_scopes()

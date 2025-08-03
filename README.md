@@ -36,7 +36,7 @@ TiDI handles this through _scopes_. Every composer in TiDI is associated with a 
 def my_dependency() -> MyDependency:
     ...
 ```
-This means `MyDependency` will only be available within a scope of type `request`. To resolve it during a specific request, you'd do:
+This means `MyDependency` will only be available within scopes of type `request`. To resolve it during a specific request, you'd do:
 ```
 resolver = get_scope(scope_id='my-request', scope_type='request')
 resolver(MyDependency)
@@ -49,7 +49,17 @@ This ensures that scoped dependencies are properly cleaned up, giving you fine-g
 
 ### A tree of scopes
 
+Every scope has a parent. When not specified, the default parent is `root`. Within a scope, you can access all dependencies of all its ancestors.
+```
+auto_compose(DependencyA)
+auto_compose(DependencyB, scope_type='tenant')
+auto_compose(DependencyC, scope_type='request')
+```
 
+```
+get_scope(scope_id='my-tenant', scope_type='tenant')
+get_scope(scope_id='my-tenant', scope_type='tenant', parent_id='my-tenant')
+```
 
 ## Resolving dependencies
 
