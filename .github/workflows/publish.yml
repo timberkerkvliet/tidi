@@ -29,12 +29,8 @@ jobs:
       - name: Build package
         run: python -m build
 
-      - name: Get OIDC token
-        id: oidc
-        run: echo "OIDC token ready"
-
       - name: Publish package to PyPI
         env:
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ steps.oidc.outputs.token }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: twine upload dist/*
