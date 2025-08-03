@@ -55,9 +55,8 @@ class ScopeManager:
         if scope_id == 'root':
             self.ensure_scope(scope_id='root', scope_type=RootType())
 
-    def clear_all_scopes(self) -> None:
-        self._scopes: dict[str, Scope] = {}
-        self.ensure_scope(scope_id='root', scope_type=RootType())
+    def reset(self) -> None:
+        self.__init__()
 
 
 scope_manager = ScopeManager()

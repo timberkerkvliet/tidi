@@ -19,5 +19,5 @@ def clear_scope(scope_id: str) -> None:
     scope_manager.clear_scope(scope_id=scope_id)
 
 
-def clear_all_scopes() -> None:
-    scope_manager.clear_all_scopes()
+def reset() -> None:
+    scope_manager.reset()

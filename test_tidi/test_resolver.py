@@ -2,7 +2,7 @@ from unittest import TestCase
 from test_tidi import resolver_composition
 from test_tidi.resolver_composition import Buzz
 
-from tidi import scan, get_resolver, clear_all_scopes
+from tidi import scan, get_resolver, reset
 
 
 class TestResolver(TestCase):
@@ -11,7 +11,7 @@ class TestResolver(TestCase):
         self.resolver = get_resolver()
 
     def tearDown(self) -> None:
-        clear_all_scopes()
+        reset()
 
     def test_buzz(self):
         result = self.resolver(Buzz)
