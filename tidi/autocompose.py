@@ -1,5 +1,6 @@
+import builtins
 import inspect
-from typing import Type
+from typing import Type, Optional
 
 from tidi import Resolver
 from tidi.composer import Composer
@@ -28,12 +29,18 @@ class AutoFactory:
         return self._dependency_type(*args)
 
 
-def auto_compose(dependency_type: Type, scope_type: str = 'singleton', **kwargs):
+def auto_compose(
+    dependency_type: Type,
+    *,
+    id: Optional[str] = None,
+    scope_type: str = 'singleton',
+    **kwargs
+):
     if not inspect.isclass(dependency_type):
         raise ValueError
     factory = AutoFactory(dependency_type)
     composer = Composer(
-            id=str(id(dependency_type)),
+            id=str(builtins.id(dependency_type)) if id is None else id,
             scope_type=parse_scope_type(scope_type),
             conditions=Conditions(
                 conditions={
