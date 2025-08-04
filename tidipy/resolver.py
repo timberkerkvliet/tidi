@@ -6,7 +6,7 @@ T = TypeVar('T')
 
 
 class Resolver:
-    def __init__(self, method: Callable[[Type, Optional[str], dict[str, str]], Any]):
+    def __init__(self, method: Callable[[Type, Optional[str]], Any]):
         self._method = method
 
     def __call__(self, dependency_type: Type[T], id=None) -> T:

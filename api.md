@@ -3,7 +3,7 @@
 Everything can be imported from the root of the package:
 
 ```
-from tidypy import composer, auto_compose, ensure_scope, clear_scope, reset, add_context, get_resolver, scan
+from tidipy import composer, auto_compose, ensure_scope, clear_scope, reset, add_context, get_resolver, scan
 ```
 
 ### composer
