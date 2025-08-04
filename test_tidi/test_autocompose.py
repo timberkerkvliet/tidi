@@ -2,30 +2,40 @@ from unittest import TestCase
 
 from test_tidi import autocompose_composition
 from test_tidi.autocompose_composition import PointWrapper, Point, PointWrapperWrapper
-from tidipy import scan, get_resolver, reset, auto_compose
+from tidipy import scan, get_resolver, reset, auto_compose, ensure_scope
 
 
 class TestAutoCompose(TestCase):
     def setUp(self) -> None:
         scan(autocompose_composition)
 
-        auto_compose(PointWrapper)
-        auto_compose(PointWrapperWrapper)
-
-        self.resolver = get_resolver()
-
     def tearDown(self) -> None:
         reset()
 
-    def test_point_wrapper(self):
-        result = self.resolver(PointWrapper)
+    def test_auto_compose(self):
+        auto_compose(PointWrapperWrapper)
+        resolver = get_resolver()
+        result = resolver(PointWrapperWrapper)
+
+        self.assertEqual(PointWrapper(point=Point(x=3, y=4)), result.point_wrapper)
+
+    def test_auto_compose_with_scope_type(self):
+        auto_compose(PointWrapperWrapper, scope_type='tenant')
+        resolver = get_resolver()
+        ensure_scope('tenant-a', scope_type='tenant')
+        tenant_resolver = get_resolver('tenant-a')
+
+        with self.assertRaises(Exception):
+            resolver(PointWrapperWrapper)
+        self.assertEqual(PointWrapper(point=Point(x=3, y=4)), tenant_resolver(PointWrapperWrapper).point_wrapper)
+
+    def test_auto_compose_with_id(self):
+        auto_compose(PointWrapper, id='auto-composed')
+        resolver = get_resolver()
+
+        result = resolver(PointWrapper, id='auto-composed')
 
         self.assertEqual(PointWrapper(point=Point(x=1, y=2)), result)
-
-    def test_point_wrapper_wrapper(self):
-        result = self.resolver(PointWrapperWrapper)
-
-        self.assertEqual(PointWrapper(point=Point(x=1, y=2)), result.point_wrapper)
 
     def test_duplicate_ids(self):
         auto_compose(str, id='some_id')

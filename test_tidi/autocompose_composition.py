@@ -19,6 +19,11 @@ class PointWrapper:
     point: Point
 
 
+@composer
+def point_wrapper() -> PointWrapper:
+    return PointWrapper(Point(x=3, y=4))
+
+
 class PointWrapperWrapper:
     def __init__(self, point_wrapper: PointWrapper):
         self.point_wrapper = point_wrapper
