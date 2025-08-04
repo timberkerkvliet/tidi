@@ -2,7 +2,7 @@ import importlib
 import inspect
 from pathlib import Path
 
-from .composer import Composer
+from .dependency import Composer
 from .scope_manager import scope_manager
 
 

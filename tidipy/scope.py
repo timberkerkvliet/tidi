@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import Type, TypeVar, Optional
 
 from .dependency_bag import DependencyBag
-from .dependency import ConcreteDependency, Dependency
-from .composer import Composer
+from .dependency import ConcreteDependency, Dependency, Composer
 from .resolver import Resolver
 from .scope_context import ScopeContext
 from .scopetype import ScopeType, RootType, Transient

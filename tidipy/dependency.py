@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Type, Any
+from typing import Type, Any, Callable
 
 from .conditions import Conditions
+from .resolver import Resolver
+from .scopetype import ScopeType
 
 
 class Dependency(ABC):
@@ -35,3 +37,31 @@ class ConcreteDependency(Dependency):
 
     def get_conditions(self) -> Conditions:
         return self.conditions
+
+
+@dataclass(frozen=True)
+class Composer(Dependency):
+    id: str
+    scope_type: ScopeType
+    conditions: Conditions
+    factory: Callable[[Resolver], Any]
+    dependency_type: Type
+
+    def get_id(self) -> str:
+        return self.id
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+
+    def get_dependency_type(self) -> Type:
+        return self.dependency_type
+
+    def get_conditions(self) -> Conditions:
+        return self.conditions
+
+    def create(self, resolver: Resolver) -> ConcreteDependency:
+        return ConcreteDependency(
+            id=self.id,
+            conditions=self.conditions,
+            value=self.factory(resolver)
+        )

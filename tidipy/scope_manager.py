@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .composer import Composer
+from .dependency import Composer
 from .scope import Scope
 from .scopetype import ScopeType, RootType
 from .resolver import Resolver

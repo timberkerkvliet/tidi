@@ -2,45 +2,16 @@ from __future__ import annotations
 
 import builtins
 import inspect
-from dataclasses import dataclass
-from typing import TypeVar, Callable, Type, get_type_hints, Optional
+from typing import TypeVar, Callable, get_type_hints, Optional
 
 from .conditions import Conditions, Condition
-from .dependency import Dependency, ConcreteDependency
+from .dependency import Composer
 from .resolver import Resolver
-from .scopetype import ScopeType, parse_scope_type
+from .scopetype import parse_scope_type
 
 T = TypeVar('T')
 
 FactoryMethod = Callable[[Resolver], T]
-
-
-@dataclass(frozen=True)
-class Composer(Dependency):
-    id: str
-    scope_type: ScopeType
-    conditions: Conditions
-    factory: Callable[[Resolver], T]
-    dependency_type: Type
-
-    def get_id(self) -> str:
-        return self.id
-
-    def __hash__(self) -> int:
-        return hash(self.id)
-
-    def get_dependency_type(self) -> Type:
-        return self.dependency_type
-
-    def get_conditions(self) -> Conditions:
-        return self.conditions
-
-    def create(self, resolver: Resolver) -> ConcreteDependency:
-        return ConcreteDependency(
-            id=self.id,
-            conditions=self.conditions,
-            value=self.factory(resolver)
-        )
 
 
 def composer(

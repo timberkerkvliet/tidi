@@ -3,7 +3,7 @@ import inspect
 from typing import Type, Optional
 
 from tidipy import Resolver
-from tidipy.composer import Composer
+from tidipy.dependency import Composer
 from tidipy.conditions import Condition, Conditions
 from tidipy.scope_manager import scope_manager
 from tidipy.scopetype import parse_scope_type
