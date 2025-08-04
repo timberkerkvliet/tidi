@@ -65,7 +65,7 @@ class Scope:
     def get_ancestor_types(self) -> set[ScopeType]:
         return {scope.get_type() for scope in self.get_ancestors()}
 
-    def add_composers(self, composers: list[Composer]) -> None:
+    def add_composers(self, composers: set[Composer]) -> None:
         for composer in composers:
             if composer.scope_type.supports_storing() and composer.scope_type != self._scope_type:
                 continue

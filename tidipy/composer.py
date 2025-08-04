@@ -26,6 +26,9 @@ class Composer(Dependency):
     def get_id(self) -> str:
         return self.id
 
+    def __hash__(self) -> int:
+        return hash(self.id)
+
     def get_dependency_type(self) -> Type:
         return self.dependency_type
 

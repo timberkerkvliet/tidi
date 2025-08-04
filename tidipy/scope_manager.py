@@ -8,14 +8,20 @@ from .resolver import Resolver
 
 class ScopeManager:
     def __init__(self):
-        self._composers = []
+        self._composers: set[Composer] = set()
         self._scopes: dict[str, Scope] = {}
         self.ensure_scope(scope_id='root', scope_type=RootType())
 
-    def add_composers(self, composers: list[Composer]) -> None:
-        self._composers = self._composers + composers
+    def add_composers(self, composers: set[Composer]) -> None:
+        new_composers = composers - self._composers
+        existing_ids = {composer.id for composer in self._composers}
+        for new_composer in new_composers:
+            if new_composer.id in existing_ids:
+                raise Exception(f'Duplicate composer with id {new_composer.id}')
+
+        self._composers = self._composers | new_composers
         for scope in self._scopes.values():
-            scope.add_composers(composers)
+            scope.add_composers(new_composers)
 
     def get_resolver(self, scope_id: str) -> Resolver:
         return self._scopes[scope_id].resolver()

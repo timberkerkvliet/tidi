@@ -13,6 +13,12 @@ class AutoFactory:
     def __init__(self, dependency_type: Type):
         self._dependency_type = dependency_type
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, AutoFactory):
+            return False
+
+        return self._dependency_type == other._dependency_type
+
     def __call__(self, resolver: Resolver):
         constructor = self._dependency_type.__init__
         sig = inspect.signature(constructor)
@@ -54,4 +60,4 @@ def auto_compose(
             dependency_type=dependency_type,
             factory=factory
         )
-    scope_manager.add_composers([composer])
+    scope_manager.add_composers({composer})

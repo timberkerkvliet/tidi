@@ -26,3 +26,9 @@ class TestAutoCompose(TestCase):
         result = self.resolver(PointWrapperWrapper)
 
         self.assertEqual(PointWrapper(point=Point(x=1, y=2)), result.point_wrapper)
+
+    def test_duplicate_ids(self):
+        auto_compose(str, id='some_id')
+
+        with self.assertRaises(Exception):
+            auto_compose(str, id='some_id', scope_type='else')
