@@ -6,7 +6,7 @@ from .dependency_bag import DependencyBag
 from .dependency import ConcreteDependency, Dependency, Composer
 from .resolver import Resolver
 from .scope_context import ScopeContext
-from .scopetype import ScopeType, RootType, Transient
+from .scope_type import ScopeType, RootType, Transient
 
 T = TypeVar('T')
 

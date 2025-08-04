@@ -6,7 +6,7 @@ from typing import Type, Any, Callable
 
 from .conditions import Conditions
 from .resolver import Resolver
-from .scopetype import ScopeType
+from .scope_type import ScopeType
 
 
 class Dependency(ABC):

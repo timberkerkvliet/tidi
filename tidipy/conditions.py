@@ -26,7 +26,7 @@ def parse_conditions(**kwargs) -> Conditions:
             conditions={
                 Condition(
                     key=key,
-                    one_of_values=frozenset(value) if isinstance(value, set) else frozenset({value})
+                    one_of_values=frozenset(value) if isinstance(value, set) else frozenset({value})  # type: ignore
                 )
                 for key, value in kwargs.items()
             }

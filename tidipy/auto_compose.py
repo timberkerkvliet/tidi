@@ -6,7 +6,7 @@ from .auto_factory import AutoFactory
 from .dependency import Composer
 from .conditions import parse_conditions
 from .scope_manager import scope_manager
-from .scopetype import parse_scope_type
+from .scope_type import parse_scope_type
 
 
 def auto_compose(

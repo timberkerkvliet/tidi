@@ -4,10 +4,10 @@ import builtins
 import inspect
 from typing import TypeVar, Callable, get_type_hints, Optional
 
-from .conditions import Conditions, Condition, parse_conditions
+from .conditions import parse_conditions
 from .dependency import Composer
 from .resolver import Resolver
-from .scopetype import parse_scope_type
+from .scope_type import parse_scope_type
 
 T = TypeVar('T')
 

@@ -2,7 +2,7 @@ from typing import Optional
 
 from .resolver import Resolver
 from .scope_manager import scope_manager
-from .scopetype import parse_scope_type
+from .scope_type import parse_scope_type
 
 
 def ensure_scope(scope_id: str = 'root', scope_type: str = 'root', parent_id: Optional[str] = None) -> None:

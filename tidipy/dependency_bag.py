@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Optional, TypeVar, Generic, Type
+from typing import Optional, Type
 
 from .dependency import Dependency
-
-T = TypeVar('T', bound=Dependency)
 
 
 class DependencyBag:
