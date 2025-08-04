@@ -116,7 +116,7 @@ add_context(stage='test')
 This now means that `resolve(Repository)` will resolve to an `InMemoryRepository`.
 
 
-## Using an identifier
+## Resolve by id
 
 Sometimes, you need multiple composers that return the same type but represent different roles or configurations. By assigning an explicit id to each composer, you can resolve the exact one you need without ambiguity.
 
