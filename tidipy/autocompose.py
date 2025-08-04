@@ -60,4 +60,4 @@ def auto_compose(
             dependency_type=dependency_type,
             factory=factory
         )
-    scope_manager.add_composers({composer})
+    scope_manager.add_composer(composer)

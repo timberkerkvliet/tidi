@@ -7,7 +7,6 @@ from .scope_manager import scope_manager
 
 
 def scan(package):
-    composers = set()
     package_path = Path(package.__file__).parent
     package_name = package.__name__
 
@@ -37,6 +36,4 @@ def scan(package):
     for mod in yield_mods:
         for name, obj in inspect.getmembers(mod):
             if isinstance(obj, Composer):
-                composers.add(obj)
-
-    scope_manager.add_composers(composers)
+                scope_manager.add_composer(obj)

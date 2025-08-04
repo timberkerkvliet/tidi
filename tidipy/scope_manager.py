@@ -11,14 +11,14 @@ class ScopeManager:
         self._composers: set[Composer] = set()
         self._scopes: dict[str, Scope] = {}
 
-    def add_composers(self, composers: set[Composer]) -> None:
-        new_composers = composers - self._composers
+    def add_composer(self, composer: Composer) -> None:
+        if composer in self._composers:
+            return
         existing_ids = {composer.id for composer in self._composers}
-        for new_composer in new_composers:
-            if new_composer.id in existing_ids:
-                raise Exception(f'Duplicate composer with id {new_composer.id}')
+        if composer.id in existing_ids:
+            raise Exception(f'Duplicate composer with id {composer.id}')
 
-        self._composers = self._composers | new_composers
+        self._composers.add(composer)
 
     def get_resolver(self, scope_id: str) -> Resolver:
         return self._get_scope(scope_id).resolver()
