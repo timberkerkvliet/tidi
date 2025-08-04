@@ -83,11 +83,11 @@ class Scope:
     def resolver(self) -> Resolver:
         return Resolver(self.get)
 
-    def _get_from_dependency(self, dependency: Dependency, resolver: Resolver):
+    def _get_from_dependency(self, dependency: Dependency):
         if isinstance(dependency, ConcreteDependency):
             return dependency.value
         if isinstance(dependency, Composer):
-            concrete = dependency.create(resolver)
+            concrete = dependency.create(self.resolver())
             if dependency.scope_type.supports_storing():
                 self._dependency_bag = self._dependency_bag.add(concrete)
             return concrete.value
@@ -97,7 +97,7 @@ class Scope:
     def get(self, dependency_type: Type[T], dependency_id: Optional[str]) -> T:
         result = self._dependency_bag.find(dependency_type, dependency_id, self._context.values())
         if result is not None:
-            return self._get_from_dependency(result, self.resolver())
+            return self._get_from_dependency(result)
 
         if self._parent is None:
             raise Exception(f'No candidate for type {dependency_type}')
