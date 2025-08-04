@@ -17,6 +17,7 @@ class Scope:
         self,
         scope_id: str,
         scope_type: ScopeType,
+        composers: set[Composer],
         parent: Optional[Scope] = None
     ):
         self._scope_id = scope_id
@@ -24,6 +25,7 @@ class Scope:
         self._scope_type = scope_type
         self._dependency_bag: DependencyBag = DependencyBag.empty()
         self._context: ScopeContext = ScopeContext.empty()
+        self._add_composers(composers)
         self._validate()
 
     def _validate(self):
@@ -65,7 +67,7 @@ class Scope:
     def get_ancestor_types(self) -> set[ScopeType]:
         return {scope.get_type() for scope in self.get_ancestors()}
 
-    def add_composers(self, composers: set[Composer]) -> None:
+    def _add_composers(self, composers: set[Composer]) -> None:
         for composer in composers:
             if composer.scope_type.supports_storing() and composer.scope_type != self._scope_type:
                 continue

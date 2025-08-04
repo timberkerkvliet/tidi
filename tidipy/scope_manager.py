@@ -10,7 +10,6 @@ class ScopeManager:
     def __init__(self):
         self._composers: set[Composer] = set()
         self._scopes: dict[str, Scope] = {}
-        self.ensure_scope(scope_id='root', scope_type=RootType())
 
     def add_composers(self, composers: set[Composer]) -> None:
         new_composers = composers - self._composers
@@ -20,11 +19,15 @@ class ScopeManager:
                 raise Exception(f'Duplicate composer with id {new_composer.id}')
 
         self._composers = self._composers | new_composers
-        for scope in self._scopes.values():
-            scope.add_composers(new_composers)
 
     def get_resolver(self, scope_id: str) -> Resolver:
-        return self._scopes[scope_id].resolver()
+        return self._get_scope(scope_id).resolver()
+
+    def _get_scope(self, scope_id: str) -> Scope:
+        if scope_id == 'root':
+            self.ensure_scope(scope_id='root', scope_type=RootType())
+
+        return self._scopes[scope_id]
 
     def ensure_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> None:
         if scope_id not in self._scopes:
@@ -40,13 +43,13 @@ class ScopeManager:
             raise Exception
 
     def _create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> None:
-        parent = self._scopes[parent_id] if parent_id is not None else None
+        parent = self._get_scope(parent_id) if parent_id is not None else None
         scope = Scope(
             scope_id=scope_id,
             parent=parent,
-            scope_type=scope_type
+            scope_type=scope_type,
+            composers=self._composers
         )
-        scope.add_composers(self._composers)
         if parent is not None:
             scope.add_context(parent.get_context().values())
 
@@ -56,16 +59,15 @@ class ScopeManager:
         self._scopes[scope_id] = scope
 
     def add_context(self, scope_id: str, values: dict[str, str]):
-        self._scopes[scope_id].add_context(values)
+        self._get_scope(scope_id).add_context(values)
 
-    def clear_scope(self, scope_id: str):
+    def clear_scope(self, scope_id: str) -> None:
+        if scope_id not in self._scopes:
+            return
         deleted_scope = self._scopes.pop(scope_id)
         child_ids = {scope.get_id() for scope in self._scopes.values() if scope.get_parent() == deleted_scope}
         for child_id in child_ids:
             self.clear_scope(child_id)
-
-        if scope_id == 'root':
-            self.ensure_scope(scope_id='root', scope_type=RootType())
 
     def reset(self) -> None:
         self.__init__()
