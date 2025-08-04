@@ -30,8 +30,9 @@ class ScopeManager:
         return self._scopes[scope_id]
 
     def ensure_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> None:
+        scope = self._create_scope(scope_id, scope_type, parent_id)
         if scope_id not in self._scopes:
-            self._create_scope(scope_id, scope_type, parent_id)
+            self._scopes[scope_id] = scope
             return
 
         existing_scope = self._scopes[scope_id]
@@ -42,7 +43,7 @@ class ScopeManager:
         if existing_scope.get_parent() is not None and existing_scope.get_parent().get_id() != parent_id:
             raise Exception
 
-    def _create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> None:
+    def _create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> Scope:
         parent = self._get_scope(parent_id) if parent_id is not None else None
         scope = Scope(
             scope_id=scope_id,
@@ -53,10 +54,7 @@ class ScopeManager:
         if parent is not None:
             scope.add_context(parent.get_context().values())
 
-        if scope_id in self._scopes:
-            raise Exception('Scope already exists')
-
-        self._scopes[scope_id] = scope
+        return scope
 
     def add_context(self, scope_id: str, values: dict[str, str]):
         self._get_scope(scope_id).add_context(values)
