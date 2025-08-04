@@ -4,7 +4,7 @@ from typing import Type, Optional
 
 from tidipy import Resolver
 from tidipy.dependency import Composer
-from tidipy.conditions import Condition, Conditions
+from tidipy.conditions import Condition, Conditions, parse_conditions
 from tidipy.scope_manager import scope_manager
 from tidipy.scopetype import parse_scope_type
 
@@ -48,15 +48,7 @@ def auto_compose(
     composer = Composer(
             id=str(builtins.id(dependency_type)) if id is None else id,
             scope_type=parse_scope_type(scope_type),
-            conditions=Conditions(
-                conditions={
-                    Condition(
-                        key=key,
-                        one_of_values=frozenset(value) if isinstance(value, set) else frozenset({value})
-                    )
-                    for key, value in kwargs.items()
-                }
-            ),
+            conditions=parse_conditions(**kwargs),
             dependency_type=dependency_type,
             factory=factory
         )

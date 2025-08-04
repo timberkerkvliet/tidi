@@ -19,3 +19,15 @@ class Conditions:
 
     def is_fulfilled_by(self, value_map: dict[str, str]) -> bool:
         return all(condition.is_fulfilled_by(value_map) for condition in self.conditions)
+
+
+def parse_conditions(**kwargs) -> Conditions:
+    return Conditions(
+            conditions={
+                Condition(
+                    key=key,
+                    one_of_values=frozenset(value) if isinstance(value, set) else frozenset({value})
+                )
+                for key, value in kwargs.items()
+            }
+        )
