@@ -13,19 +13,19 @@
 
 ## Intro
 
-TiDIPy—short for Timber Dependency Injection Python—is a minimalist, opinionated dependency injection framework created by me, Timber. It emphasizes simplicity, ease of use, and a principled approach to DI.
+TiDIpy—short for Timber Dependency Injection Python—is a minimalist, opinionated dependency injection framework created by me, Timber. It emphasizes simplicity, ease of use, and a principled approach to DI.
 
 ## In the spirit of real DI
 
 The essence of dependency injection is to invert the direction of dependency: the client specifies what type of dependencies it requires, while someone else decides which concrete instances to provide. Many DI frameworks blur this distinction by introducing configuration logic directly into the client—who should only declare its dependencies, not manage them. While this can seem convenient, it undermines the core value of dependency injection.
 
-TiDIPy maintains this separation strictly. Consider the following client:
+TiDIpy maintains this separation strictly. Consider the following client:
 ```
 class MyClient:
     def __init__(self, dependency: MyDependency):
         ... 
 ```
-No TiDIPy-specific elements are required in MyClient. Instead, composition is handled externally in a dedicated composer function:
+No TiDIpy-specific elements are required in MyClient. Instead, composition is handled externally in a dedicated composer function:
 ```
 @composer
 def my_client() -> MyClient:
@@ -33,17 +33,17 @@ def my_client() -> MyClient:
 ```
 This keeps the client clean and focused and ensures that wiring and instantiation remain a separate responsibility of the composition root.
 
-Keeping dependency composition explicitly separate is the core principle of DI—but it does come with the trade-off of writing a bit more code. TiDIPy aims to make defining the composition root as convenient as possible. One key feature that helps with this is _auto composition_:
+Keeping dependency composition explicitly separate is the core principle of DI—but it does come with the trade-off of writing a bit more code. TiDIpy aims to make defining the composition root as convenient as possible. One key feature that helps with this is _auto composition_:
 ```
 auto_compose(MyClient)
 ```
-This allows TiDIPy to automatically resolve and compose the dependencies in many cases, reducing boilerplate while preserving separation of concerns.
+This allows TiDIpy to automatically resolve and compose the dependencies in many cases, reducing boilerplate while preserving separation of concerns.
 
 ## Scopes and lifetime management
 
 Composition isn't just about specifying how dependencies are created and connected—it's also about managing _when_ they are instantiated and cleaned up. Not every object in the dependency graph needs to be created upfront, and clients should stay unaware of the timing or lifecycle of their dependencies.
 
-TiDIPy handles this through _scopes_. Every composer in TiDIPy is associated with a scope type—by default, this is `root`. You can assign a custom scope like this:
+TiDIpy handles this through _scopes_. Every composer in TiDIpy is associated with a scope type—by default, this is `root`. You can assign a custom scope like this:
 ```
 @composer(scope_type='request')
 def my_dependency() -> MyDependency:
@@ -103,7 +103,7 @@ class PostgresRepository(Repository):
     ...
 ```
 
-If both `InMemoryRepository` and `PostgresRepository` have their own composers, then the type Repository becomes ambiguous—TiDIPy won’t know which one to resolve by default.
+If both `InMemoryRepository` and `PostgresRepository` have their own composers, then the type Repository becomes ambiguous—TiDIpy won’t know which one to resolve by default.
 
 You can use _scope context_ — key-value tags that express context-specific choices.
 ```
@@ -148,14 +148,14 @@ Since IDs are unique, this guarantees an unambiguous resolution.
 
 ## Integration with starlette/fastapi
 
-See  [FastAPI example](https://github.com/timberkerkvliet/tidipy/blob/main/examples/fastapi_app.py).
+See  [FastAPI example](https://github.com/timberkerkvliet/TiDIpy/blob/main/examples/fastapi_app.py).
 
 ## API reference
 
 Everything can be imported from the root of the package:
 
 ```
-from tidipy import composer, auto_compose, ensure_scope, clear_scope, reset, add_context, get_resolver, scan
+from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, add_context, get_resolver, scan
 ```
 
 ### composer
