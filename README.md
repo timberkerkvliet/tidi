@@ -136,3 +136,7 @@ Instead, you can resolve them explicitly by ID:
 resolve(DatabaseConnection, id='primary-db')
 ```
 Since IDs are unique, this guarantees an unambiguous resolution.
+
+## Integration with starlette/fastapi
+
+See  [FastAPI example](https://github.com/timberkerkvliet/tidipy/blob/main/examples/fastapi_app.py).
