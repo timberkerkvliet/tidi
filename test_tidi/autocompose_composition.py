@@ -27,3 +27,8 @@ def point_wrapper() -> PointWrapper:
 class PointWrapperWrapper:
     def __init__(self, point_wrapper: PointWrapper):
         self.point_wrapper = point_wrapper
+
+
+class EmptyInit:
+    def hey(self) -> str:
+        return 'hey'

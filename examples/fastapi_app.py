@@ -25,9 +25,6 @@ class RequestScopeMiddleware(BaseHTTPMiddleware):
 
 
 class NameSayer:
-    def __init__(self):
-        pass
-
     def my_name(self) -> str:
         return 'TiDIpy'
 

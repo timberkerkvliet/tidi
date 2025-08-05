@@ -15,10 +15,17 @@ class AutoFactory:
         return self._dependency_type == other._dependency_type
 
     def __call__(self, resolver: Resolver):
-        constructor = self._dependency_type.__init__
-        sig = inspect.signature(constructor)
+        try:
+            sig = inspect.signature(self._dependency_type)
+        except ValueError:
+            # Built-in types may raise ValueError
+            return self._dependency_type()
 
-        params = list(sig.parameters.values())[1:]
+        params = list(sig.parameters.values())
+
+        # Skip 'self' if it's an instance method (e.g., normal class __init__)
+        if params and params[0].name == 'self':
+            params = params[1:]
 
         args = []
         for param in params:

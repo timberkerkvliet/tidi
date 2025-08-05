@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from test_tidi import autocompose_composition
-from test_tidi.autocompose_composition import PointWrapper, Point, PointWrapperWrapper
+from test_tidi.autocompose_composition import PointWrapper, Point, PointWrapperWrapper, EmptyInit
 from tidipy import scan, get_resolver, reset, auto_compose, ensure_scope
 
 
@@ -42,3 +42,10 @@ class TestAutoCompose(TestCase):
 
         with self.assertRaises(Exception):
             auto_compose(str, id='some_id', scope_type='else')
+
+    def test_empty_init(self):
+        auto_compose(EmptyInit)
+        resolver = get_resolver()
+        result = resolver(EmptyInit)
+
+        self.assertEqual(result.hey(), 'hey')
