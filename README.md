@@ -1,4 +1,15 @@
-# TiDIPy
+# TiDIpy
+
+## Index
+
+- [Intro](#intro)  
+- [In the spirit of real DI](#in-the-spirit-of-real-di)  
+- [Scopes and lifetime management](#scopes-and-lifetime-management)  
+  - [A tree of scopes](#a-tree-of-scopes)  
+- [Working with scope context](#working-with-scope-context)  
+- [Resolve by id](#resolve-by-id)  
+- [Integration with starlette/fastapi](#integration-with-starlettefastapi)  
+
 
 ## Intro
 
