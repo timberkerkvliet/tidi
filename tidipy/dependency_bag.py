@@ -21,17 +21,24 @@ class DependencyBag:
             }
         )
 
+    def remove(self, filter_values: dict[str, str]) -> DependencyBag:
+        return DependencyBag(
+            {
+                dependency_id: dependency
+                for dependency_id, dependency in self._dependencies.items()
+                if dependency.get_conditions().is_fulfilled_by(filter_values)
+            }
+        )
+
     def find(
         self,
         dependency_type: Type,
-        dependency_id: Optional[str],
-        filter_values: dict[str, str]
+        dependency_id: Optional[str]
     ) -> Optional[Dependency]:
         candidates = [
             dependency
             for dependency in self._dependencies.values()
             if issubclass(dependency.get_dependency_type(), dependency_type)
-            and dependency.get_conditions().is_fulfilled_by(filter_values)
         ]
         if dependency_id is not None:
             candidates = [dependency for dependency in candidates if dependency.get_id() == dependency_id]

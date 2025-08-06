@@ -75,6 +75,7 @@ class Scope:
 
     def add_context(self, values: dict[str, str]) -> None:
         self._context = self._context.add(values)
+        self._dependency_bag = self._dependency_bag.remove(self._context.values())
 
     def resolver(self) -> Resolver:
         return Resolver(self._get)
@@ -91,7 +92,7 @@ class Scope:
         raise Exception
 
     def _get(self, dependency_type: Type[T], dependency_id: Optional[str]) -> T:
-        result = self._dependency_bag.find(dependency_type, dependency_id, self._context.values())
+        result = self._dependency_bag.find(dependency_type, dependency_id)
         if result is not None:
             return self._get_from_dependency(result)
 
