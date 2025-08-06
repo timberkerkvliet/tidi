@@ -27,6 +27,9 @@ class Scope:
         self._add_composers(composers)
         self._validate()
 
+        if parent is not None:
+            self.add_context(parent._context.values())
+
     def _validate(self):
         if self._scope_id == 'root' and self._scope_type != RootType():
             raise Exception('Only root scope can have root type')
@@ -73,11 +76,8 @@ class Scope:
     def add_context(self, values: dict[str, str]) -> None:
         self._context = self._context.add(values)
 
-    def get_context(self) -> ScopeContext:
-        return self._context
-
     def resolver(self) -> Resolver:
-        return Resolver(self.get)
+        return Resolver(self._get)
 
     def _get_from_dependency(self, dependency: Dependency):
         if isinstance(dependency, ConcreteDependency):
@@ -90,7 +90,7 @@ class Scope:
 
         raise Exception
 
-    def get(self, dependency_type: Type[T], dependency_id: Optional[str]) -> T:
+    def _get(self, dependency_type: Type[T], dependency_id: Optional[str]) -> T:
         result = self._dependency_bag.find(dependency_type, dependency_id, self._context.values())
         if result is not None:
             return self._get_from_dependency(result)
@@ -98,4 +98,4 @@ class Scope:
         if self._parent is None:
             raise Exception(f'No candidate for type {dependency_type}')
 
-        return self._parent.get(dependency_type, dependency_id)
+        return self._parent._get(dependency_type, dependency_id)

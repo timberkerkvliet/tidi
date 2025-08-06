@@ -56,8 +56,6 @@ class ScopeManager:
             scope_type=scope_type,
             composers=to_add
         )
-        if parent is not None:
-            scope.add_context(parent.get_context().values())
 
         return scope
 
