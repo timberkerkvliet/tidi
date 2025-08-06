@@ -32,15 +32,12 @@ class DependencyBag:
         )
 
     def _get_from_dependency(self, dependency: Dependency, resolver: Resolver):
-        if isinstance(dependency, ConcreteDependency):
-            return dependency.value
-        if isinstance(dependency, Composer):
-            concrete = dependency.create(resolver)
-            if dependency.scope_type.supports_storing():
-                self._dependencies[dependency.get_id()] = concrete
-            return concrete.value
+        concrete = dependency.make_concrete(resolver)
 
-        raise Exception
+        if dependency.supports_storing():
+            self._dependencies[dependency.get_id()] = concrete
+
+        return concrete.value
 
     def find(
         self,
