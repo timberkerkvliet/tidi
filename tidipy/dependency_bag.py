@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Optional, Type
 
-from .dependency import Dependency
+from .resolver import Resolver
+from .dependency import Dependency, ConcreteDependency, Composer
 
 
 class DependencyBag:
@@ -30,10 +31,22 @@ class DependencyBag:
             }
         )
 
+    def _get_from_dependency(self, dependency: Dependency, resolver: Resolver):
+        if isinstance(dependency, ConcreteDependency):
+            return dependency.value
+        if isinstance(dependency, Composer):
+            concrete = dependency.create(resolver)
+            if dependency.scope_type.supports_storing():
+                self._dependencies[dependency.get_id()] = concrete
+            return concrete.value
+
+        raise Exception
+
     def find(
         self,
         dependency_type: Type,
-        dependency_id: Optional[str]
+        dependency_id: Optional[str],
+        resolver: Resolver
     ) -> Optional[Dependency]:
         candidates = [
             dependency
@@ -43,7 +56,8 @@ class DependencyBag:
         if dependency_id is not None:
             candidates = [dependency for dependency in candidates if dependency.get_id() == dependency_id]
         if len(candidates) == 1:
-            return next(iter(candidates))
+            dependency = next(iter(candidates))
+            return self._get_from_dependency(dependency, resolver)
         if len(candidates) > 1:
             raise Exception(f'More than 1 candidate for type {dependency_type}')
 
