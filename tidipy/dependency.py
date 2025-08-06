@@ -46,9 +46,6 @@ class ConcreteDependency(Dependency):
     def get_conditions(self) -> Conditions:
         return self.conditions
 
-    def get_concrete(self) -> Conditions:
-        return self.conditions
-
     def make_concrete(self, resolver: Resolver) -> ConcreteDependency:
         return self
 
