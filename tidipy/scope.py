@@ -68,9 +68,6 @@ class Scope:
 
     def _add_composers(self, composers: set[Composer]) -> None:
         for composer in composers:
-            if composer.scope_type.supports_storing() and composer.scope_type != self._scope_type:
-                continue
-
             self._dependency_bag = self._dependency_bag.add(composer)
 
     def add_context(self, values: dict[str, str]) -> None:
