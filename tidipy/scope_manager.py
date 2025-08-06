@@ -45,11 +45,16 @@ class ScopeManager:
 
     def _create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> Scope:
         parent = self._get_scope(parent_id) if parent_id is not None else None
+        to_add = {
+            composer
+            for composer in self._composers
+            if not composer.scope_type.supports_storing() or composer.scope_type == scope_type
+        }
         scope = Scope(
             scope_id=scope_id,
             parent=parent,
             scope_type=scope_type,
-            composers=self._composers
+            composers=to_add
         )
         if parent is not None:
             scope.add_context(parent.get_context().values())
