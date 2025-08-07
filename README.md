@@ -120,7 +120,7 @@ be considered if it has value `prod`.
 
 We add context to our scope with:
 ```
-add_context(stage='test')
+ensure_scope(scope_id='root, context={'stage': 'test')
 ```
 This now means that `resolve(Repository)` will resolve to an `InMemoryRepository`.
 
@@ -155,7 +155,7 @@ See  [FastAPI example](https://github.com/timberkerkvliet/TiDIpy/blob/main/examp
 Everything can be imported from the root of the package:
 
 ```
-from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, add_context, get_resolver, scan
+from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, get_resolver, scan
 ```
 
 ### composer
@@ -174,7 +174,8 @@ from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, add
 `ensure_scope` is a function checks that a scope with the given properties already exists and if not creates one. It takes as arguments:
 * `scope_id: str` the target scope
 * `scope_type: str` the type this scope should have
-*  `parent_id` the ID of the parent scope
+* `parent_id: Optional[str]` the ID of the parent scope
+* `context: Optional[dict[str,str]]` context of the scope 
 
 ### clear_scope
 
@@ -183,12 +184,6 @@ from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, add
 ### reset
 
 `reset` is a function that resets TiDI completely. It clears all scopes and forgets all registered composers.
-
-### add_context
-
-`add_context` is a function that adds context values to a scope. It takes as arguments:
-* `scope_id: str` the target scope
-* `kwargs: str` the values to add
 
 ### get_resolver
 
