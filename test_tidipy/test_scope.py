@@ -133,7 +133,6 @@ class TestScope(TestCase):
         with self.assertRaises(Exception):
             ensure_scope(scope_id='tenant-b', scope_type='tenant', parent_id='request')
 
-
     def test_conflicting_scope_types(self):
         ensure_scope(scope_id='x', scope_type='tenant')
 

@@ -57,6 +57,12 @@ class TestContext(TestCase):
         with self.assertRaises(Exception):
             ensure_scope(scope_id='root', context={'new': 'iets'})
 
+    def test_cannot_change_empty_context(self):
+        ensure_scope(scope_id='root')
+
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='root', context={'a': 'b'})
+
     def test_cannot_change_context_in_child(self):
         ensure_scope(scope_id='root', context={'environment': 'test'})
 
