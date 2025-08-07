@@ -120,7 +120,7 @@ be considered if it has value `prod`.
 
 We add context to our scope with:
 ```
-ensure_scope(scope_id='root, context={'stage': 'test')
+ensure_root_scope(context={'stage': 'test'})
 ```
 This now means that `resolve(Repository)` will resolve to an `InMemoryRepository`.
 
