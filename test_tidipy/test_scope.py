@@ -120,11 +120,19 @@ class TestScope(TestCase):
         with self.assertRaises(Exception):
             ensure_scope(scope_id='request-a', scope_type='transient')
 
-    def test_cannot_test_scope_of_same_type(self):
+    def test_cannot_create_child_scope_of_same_type(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
 
         with self.assertRaises(Exception):
             ensure_scope(scope_id='tenant-b', scope_type='tenant', parent_id='tenant-a')
+
+    def test_cannot_nest_scope_of_same_type(self):
+        ensure_scope(scope_id='tenant-a', scope_type='tenant')
+        ensure_scope(scope_id='request', scope_type='request', parent_id='tenant-a')
+
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='tenant-b', scope_type='tenant', parent_id='request')
+
 
     def test_conflicting_scope_types(self):
         ensure_scope(scope_id='x', scope_type='tenant')
