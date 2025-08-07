@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from test_tidi import autocompose_composition
-from test_tidi.autocompose_composition import PointWrapper, Point, PointWrapperWrapper, EmptyInit
+from test_tidipy import autocompose_composition
+from test_tidipy.autocompose_composition import PointWrapper, Point, PointWrapperWrapper, EmptyInit
 from tidipy import scan, get_resolver, reset, auto_compose, ensure_scope
 
 

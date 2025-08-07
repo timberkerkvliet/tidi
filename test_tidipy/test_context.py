@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from test_tidi import context_composition
-from test_tidi.context_composition import StringGenerator, HelloGenerator, TimberGenerator, App
+from test_tidipy import context_composition
+from test_tidipy.context_composition import StringGenerator, HelloGenerator, TimberGenerator, App
 from tidipy import scan, get_resolver, reset, ensure_scope
 
 

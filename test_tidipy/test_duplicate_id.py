@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from test_tidi import duplicate_id_composition
+from test_tidipy import duplicate_id_composition
 from tidipy import scan, reset
 
 

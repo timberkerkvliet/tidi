@@ -1,6 +1,6 @@
 from unittest import TestCase
-from test_tidi import resolver_composition
-from test_tidi.resolver_composition import Buzz
+from test_tidipy import resolver_composition
+from test_tidipy.resolver_composition import Buzz
 
 from tidipy import scan, get_resolver, reset
 
