@@ -2,6 +2,7 @@ from typing import Optional
 
 from .dependency import Composer
 from .scope import Scope
+from .scope_context import ScopeContext
 from .scope_type import ScopeType, RootType
 from .resolver import Resolver
 
@@ -29,8 +30,14 @@ class ScopeManager:
 
         return self._scopes[scope_id]
 
-    def ensure_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str] = None) -> None:
-        scope = self._create_scope(scope_id, scope_type, parent_id)
+    def ensure_scope(
+        self,
+        scope_id: str,
+        scope_type: ScopeType,
+        parent_id: Optional[str] = None,
+        context: Optional[ScopeContext] = None
+    ) -> None:
+        scope = self._create_scope(scope_id, scope_type, parent_id, context or ScopeContext.empty())
         if scope_id not in self._scopes:
             self._scopes[scope_id] = scope
             return
@@ -42,8 +49,16 @@ class ScopeManager:
             raise Exception
         if existing_scope.get_parent() is not None and existing_scope.get_parent().get_id() != parent_id:
             raise Exception
+        if context is not None and existing_scope.get_context() != context:
+            raise Exception
 
-    def _create_scope(self, scope_id: str, scope_type: ScopeType, parent_id: Optional[str]) -> Scope:
+    def _create_scope(
+        self,
+        scope_id: str,
+        scope_type: ScopeType,
+        parent_id: Optional[str],
+        context: ScopeContext
+    ) -> Scope:
         parent = self._get_scope(parent_id) if parent_id is not None else None
         to_add = {
             composer
@@ -56,6 +71,7 @@ class ScopeManager:
             scope_type=scope_type,
             composers=to_add
         )
+        scope.add_context(context.values())
 
         return scope
 
