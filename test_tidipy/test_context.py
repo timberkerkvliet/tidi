@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from test_tidipy import context_composition
 from test_tidipy.context_composition import StringGenerator, HelloGenerator, TimberGenerator, App
-from tidipy import scan, get_resolver, reset, ensure_scope
+from tidipy import scan, get_resolver, reset, ensure_scope, ensure_root_scope
 
 
 class TestContext(TestCase):
@@ -13,19 +13,19 @@ class TestContext(TestCase):
         reset()
 
     def test_production(self):
-        ensure_scope(scope_id='root', context={'environment': 'prod'})
+        ensure_root_scope(context={'environment': 'prod'})
         result = get_resolver()(StringGenerator)
 
         self.assertEqual(result.generate(), 'Timber')
 
     def test_specific_type(self):
-        ensure_scope(scope_id='root', context={'environment': 'test'})
+        ensure_root_scope(context={'environment': 'test'})
         result = get_resolver()(HelloGenerator)
 
         self.assertEqual(result.generate(), 'Hello')
 
     def test_resolves_with_additional_values(self):
-        ensure_scope(scope_id='root', context={'environment': 'test', 'extra_key': 'iets'})
+        ensure_root_scope(context={'environment': 'test', 'extra_key': 'iets'})
         result = get_resolver()(HelloGenerator)
 
         self.assertEqual(result.generate(), 'Hello')
@@ -40,31 +40,31 @@ class TestContext(TestCase):
         self.assertEqual(result.generate(), 'Timber')
 
     def test_resolve_app(self):
-        ensure_scope(scope_id='root', context={'environment': 'test'})
+        ensure_root_scope(context={'environment': 'test'})
         app = get_resolver()(App)
 
         self.assertEqual(app.generate(), 'Hello')
 
     def test_cannot_change_context(self):
-        ensure_scope(scope_id='root', context={'environment': 'test'})
+        ensure_root_scope(context={'environment': 'test'})
 
         with self.assertRaises(Exception):
-            ensure_scope(scope_id='root', context={'environment': 'prod'})
+            ensure_root_scope(context={'environment': 'prod'})
 
     def test_cannot_add_to_context(self):
-        ensure_scope(scope_id='root', context={'environment': 'test'})
+        ensure_root_scope(context={'environment': 'test'})
 
         with self.assertRaises(Exception):
-            ensure_scope(scope_id='root', context={'new': 'iets'})
+            ensure_root_scope(context={'new': 'iets'})
 
     def test_cannot_change_empty_context(self):
-        ensure_scope(scope_id='root')
+        ensure_root_scope()
 
         with self.assertRaises(Exception):
-            ensure_scope(scope_id='root', context={'a': 'b'})
+            ensure_root_scope(context={'a': 'b'})
 
     def test_cannot_change_context_in_child(self):
-        ensure_scope(scope_id='root', context={'environment': 'test'})
+        ensure_root_scope(context={'environment': 'test'})
 
         with self.assertRaises(Exception):
             ensure_scope('child', scope_type='child', context={'environment': 'prod'})

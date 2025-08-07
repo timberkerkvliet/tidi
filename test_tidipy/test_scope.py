@@ -3,7 +3,7 @@ from test_tidipy import scope_composition
 
 from test_tidipy.scope_composition import Animal, Hey, User
 
-from tidipy import scan, get_resolver, ensure_scope, clear_scope, reset
+from tidipy import scan, get_resolver, ensure_scope, ensure_root_scope, clear_scope, reset
 
 
 class TestScope(TestCase):
@@ -24,11 +24,11 @@ class TestScope(TestCase):
 
     def test_cannot_get_root_scope_with_parent(self):
         with self.assertRaises(Exception):
-            ensure_scope(scope_id='root', parent_id='other')
+            ensure_scope(scope_id='root', scope_type='root', parent_id='other')
 
     def test_cannot_get_scope_with_nonexisting_parent(self):
         with self.assertRaises(Exception):
-            ensure_scope(scope_id='hey', parent_id='non-existant')
+            ensure_scope(scope_id='hey', scope_type='hey', parent_id='non-existant')
 
     def test_create_scope(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
@@ -64,7 +64,7 @@ class TestScope(TestCase):
         clear_scope(scope_id='tenant-a')
 
         with self.assertRaises(Exception):
-            ensure_scope('tenant-a')
+            get_resolver('tenant-a')
 
     def test_can_access_root_scope_from_child(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
@@ -89,13 +89,13 @@ class TestScope(TestCase):
         ensure_scope(scope_id='child', scope_type='child')
 
         with self.assertRaises(Exception):
-            ensure_scope(scope_id='root', context={'a': 'b'})
+            ensure_root_scope(context={'a': 'b'})
 
     def test_can_ensure_root_scope_after_clearing(self):
         ensure_scope(scope_id='child', scope_type='child')
         clear_scope('root')
         try:
-            ensure_scope(scope_id='root', context={'a': 'b'})
+            ensure_root_scope(context={'a': 'b'})
         except Exception:
             self.fail()
 
