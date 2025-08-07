@@ -85,6 +85,20 @@ class TestScope(TestCase):
 
         self.assertEqual(Hey(age=17), result)
 
+    def test_cannot_ensure_root_scope_with_context_after_nesting(self):
+        ensure_scope(scope_id='child', scope_type='child')
+
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='root', context={'a': 'b'})
+
+    def test_can_ensure_root_scope_after_clearing(self):
+        ensure_scope(scope_id='child', scope_type='child')
+        clear_scope('root')
+        try:
+            ensure_scope(scope_id='root', context={'a': 'b'})
+        except Exception:
+            self.fail()
+
     def test_nested_scopes(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
         ensure_scope(scope_id='request-b', scope_type='request', parent_id='tenant-a')
