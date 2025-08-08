@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Type, TypeVar, Optional, Any
+from typing import TypeVar, Optional
 
+from .dependency import Composer
 from .dependency_bag import DependencyBag
-from .dependency import ConcreteDependency, Dependency, Composer
 from .resolver import Resolver
 from .scope_context import ScopeContext
 from .scope_type import ScopeType, RootType, Transient
