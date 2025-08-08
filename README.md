@@ -120,7 +120,7 @@ be considered if it has value `prod`.
 
 We add context to our scope with:
 ```
-ensure_root_scope(context={'stage': 'test'})
+ensure_scope(scope_id='app', scope_type='app', context={'stage': 'test'})
 ```
 This now means that `resolve(Repository)` will resolve to an `InMemoryRepository`.
 
@@ -155,7 +155,7 @@ See  [FastAPI example](https://github.com/timberkerkvliet/TiDIpy/blob/main/examp
 Everything can be imported from the root of the package:
 
 ```
-from TiDIpy import composer, auto_compose, ensure_scope, ensure_root_scope, clear_scope, reset, get_resolver, scan
+from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, get_resolver, scan
 ```
 
 ### composer
@@ -175,13 +175,7 @@ from TiDIpy import composer, auto_compose, ensure_scope, ensure_root_scope, clea
 * `scope_id: str` the target scope
 * `scope_type: str` the type this scope should have
 * `parent_id: str` the ID of the parent scope
-* `context: Optional[dict[str,str]]` context of the scope 
-
-### ensure_root_scope
-
-`ensure_root_scope` is a function checks that the root scope with a certain context already exists and if not creates one. It takes one argument:
-* `context: Optional[dict[str,str]]` context of the scope 
-
+* `context: Optional[dict[str,str]]` context of the scope
 
 ### clear_scope
 

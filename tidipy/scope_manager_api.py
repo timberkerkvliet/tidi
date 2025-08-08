@@ -20,17 +20,6 @@ def ensure_scope(
     )
 
 
-def ensure_root_scope(
-    context: Optional[dict[str, str]] = None
-) -> None:
-    scope_manager.ensure_scope(
-        scope_id='root',
-        scope_type=RootType(),
-        parent_id=None,
-        context=ScopeContext(context) if context is not None else None
-    )
-
-
 def get_resolver(scope_id: str = 'root') -> Resolver:
     return scope_manager.get_resolver(scope_id)
 
