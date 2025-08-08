@@ -3,7 +3,7 @@ import inspect
 from pathlib import Path
 
 from .dependency import Composer
-from .scope_manager import scope_manager
+from .composer_repository import ComposerRepository
 
 
 def scan(package):
@@ -36,4 +36,4 @@ def scan(package):
     for mod in yield_mods:
         for name, obj in inspect.getmembers(mod):
             if isinstance(obj, Composer):
-                scope_manager.add_composer(obj)
+                ComposerRepository.add_composer(obj)

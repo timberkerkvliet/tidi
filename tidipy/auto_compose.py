@@ -5,7 +5,7 @@ from typing import Type, Optional
 from .auto_factory import AutoFactory
 from .dependency import Composer
 from .conditions import parse_conditions
-from .scope_manager import scope_manager
+from .composer_repository import ComposerRepository
 from .scope_type import parse_scope_type
 
 
@@ -26,4 +26,4 @@ def auto_compose(
             dependency_type=dependency_type,
             factory=factory
         )
-    scope_manager.add_composer(composer)
+    ComposerRepository.add_composer(composer)

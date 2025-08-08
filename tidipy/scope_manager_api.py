@@ -3,7 +3,7 @@ from typing import Optional
 from .resolver import Resolver
 from .scope import Scope
 from .scope_context import ScopeContext
-from .scope_manager import scope_manager
+from .composer_repository import ComposerRepository
 from .scope_type import parse_scope_type, RootType
 
 
@@ -16,7 +16,7 @@ class RootScopeProvider:
             RootScopeProvider._root_scope = Scope(
                 scope_id='root',
                 scope_type=RootType(),
-                composers=scope_manager.get_composers(),
+                composers=ComposerRepository.get_composers(),
                 context=ScopeContext.empty()
             )
 
@@ -66,4 +66,4 @@ def clear_scope(scope_id: str) -> None:
 
 def reset() -> None:
     RootScopeProvider.reset()
-    scope_manager.reset()
+    ComposerRepository.reset()
