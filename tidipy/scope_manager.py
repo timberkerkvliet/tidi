@@ -59,21 +59,13 @@ class ScopeManager:
         parent_id: Optional[str],
         context: ScopeContext
     ) -> Scope:
-        parent = self._get_scope(parent_id) if parent_id is not None else None
-        to_add = {
-            composer
-            for composer in self._composers
-            if not composer.scope_type.supports_storing() or composer.scope_type == scope_type
-        }
-        scope = Scope(
+        return Scope(
             scope_id=scope_id,
-            parent=parent,
+            parent=self._get_scope(parent_id) if parent_id is not None else None,
             scope_type=scope_type,
-            composers=to_add,
-            context=context if parent is None else context.add(parent.get_context().values())
+            composers=self._composers,
+            context=context
         )
-
-        return scope
 
     def clear_scope(self, scope_id: str) -> None:
         if scope_id not in self._scopes:

@@ -23,8 +23,13 @@ class Scope:
         self._scope_id = scope_id
         self._parent = parent
         self._scope_type = scope_type
-        self._dependency_bag: DependencyBag = DependencyBag.from_dependencies(composers)
-        self._context = context
+        to_add = {
+            composer
+            for composer in composers
+            if not composer.scope_type.supports_storing() or composer.scope_type == scope_type
+        }
+        self._dependency_bag: DependencyBag = DependencyBag.from_dependencies(to_add)
+        self._context = context if parent is None else context.add(parent.get_context().values())
         self._validate()
 
     def _validate(self):
