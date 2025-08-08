@@ -25,12 +25,18 @@ class Scope:
         self._children: dict[str, Scope] = {}
         self._scope_type = scope_type
         self._composers = composers
-        self._dependency_bag: DependencyBag = DependencyBag.from_dependencies({
-            composer
-            for composer in composers
-            if not composer.scope_type.supports_storing() or composer.scope_type == scope_type
-        })
+
         self._context = context if parent is None else context.add(parent.get_context().values())
+
+        self._resolver = Resolver(
+            context=self._context,
+            parent=self._parent.resolver() if self._parent is not None else None,
+            dependency_bag=DependencyBag.from_dependencies({
+                composer
+                for composer in composers
+                if not composer.scope_type.supports_storing() or composer.scope_type == scope_type
+            })
+        )
         self._validate()
 
     def _validate(self):
@@ -99,8 +105,4 @@ class Scope:
         return self._context
 
     def resolver(self) -> Resolver:
-        return Resolver(
-            context=self._context,
-            parent=self._parent.resolver() if self._parent is not None else None,
-            dependency_bag=self._dependency_bag
-        )
+        return self._resolver
