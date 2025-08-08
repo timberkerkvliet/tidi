@@ -22,13 +22,14 @@ class Scope:
     ):
         self._scope_id = scope_id
         self._parent = parent
+        self._children: dict[str, Scope] = {}
         self._scope_type = scope_type
-        to_add = {
+        self._composers = composers
+        self._dependency_bag: DependencyBag = DependencyBag.from_dependencies({
             composer
             for composer in composers
             if not composer.scope_type.supports_storing() or composer.scope_type == scope_type
-        }
-        self._dependency_bag: DependencyBag = DependencyBag.from_dependencies(to_add)
+        })
         self._context = context if parent is None else context.add(parent.get_context().values())
         self._validate()
 
@@ -43,6 +44,21 @@ class Scope:
             raise Exception('Ancestor already has a scope of this type')
         if self._scope_type == Transient():
             raise Exception('Scopes can not have type transient')
+
+    def add_child(
+        self,
+        scope_id: str,
+        scope_type: ScopeType,
+        context: Optional[ScopeContext] = None
+    ):
+        scope = Scope(
+            scope_id=scope_id,
+            parent=self,
+            scope_type=scope_type,
+            composers=self._composers,
+            context=context
+        )
+        self._children[scope_id] = scope
 
     def get_id(self) -> str:
         return self._scope_id
