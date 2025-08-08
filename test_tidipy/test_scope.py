@@ -85,6 +85,14 @@ class TestScope(TestCase):
 
         self.assertEqual(Hey(age=17), result)
 
+    def test_clear_root_scope(self):
+        first_object = get_resolver()(Hey)
+        clear_scope('root')
+        second_object = get_resolver()(Hey)
+
+        self.assertNotEqual(id(first_object), id(second_object))
+
+
     def test_cannot_ensure_parent_scope_with_context_after_nesting(self):
         ensure_scope(scope_id='parent', scope_type='parent')
         ensure_scope(scope_id='child', scope_type='child', parent_id='parent')
