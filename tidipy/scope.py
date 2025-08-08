@@ -60,6 +60,24 @@ class Scope:
         )
         self._children[scope_id] = scope
 
+    def find_child(self, scope_id: str) -> Optional[Scope]:
+        if scope_id in self._children:
+            return self._children[scope_id]
+
+        for child_id, child in self._children.items():
+            result = child.find_child(scope_id)
+            if result is not None:
+                return result
+
+        return None
+
+    def remove_child(self, scope_id: str) -> None:
+        if scope_id in self._children:
+            self._children.pop(scope_id)
+
+        for child_id, child in self._children.items():
+            child.remove_child(scope_id)
+
     def get_id(self) -> str:
         return self._scope_id
 
