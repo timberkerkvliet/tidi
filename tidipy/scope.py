@@ -45,38 +45,37 @@ class Scope:
         if self._scope_type == Transient():
             raise Exception('Scopes can not have type transient')
 
-    def add_child(
+    def add_scope(
         self,
         scope_id: str,
         scope_type: ScopeType,
-        context: Optional[ScopeContext] = None
+        context: ScopeContext
     ):
-        scope = Scope(
+        self._children[scope_id] = Scope(
             scope_id=scope_id,
             parent=self,
             scope_type=scope_type,
             composers=self._composers,
             context=context
         )
-        self._children[scope_id] = scope
 
-    def find_child(self, scope_id: str) -> Optional[Scope]:
-        if scope_id in self._children:
-            return self._children[scope_id]
+    def find_scope(self, scope_id: str) -> Optional[Scope]:
+        if scope_id == self._scope_id:
+            return self
 
         for child_id, child in self._children.items():
-            result = child.find_child(scope_id)
+            result = child.find_scope(scope_id)
             if result is not None:
                 return result
 
         return None
 
-    def remove_child(self, scope_id: str) -> None:
+    def remove_scope(self, scope_id: str) -> None:
         if scope_id in self._children:
             self._children.pop(scope_id)
 
         for child_id, child in self._children.items():
-            child.remove_child(scope_id)
+            child.remove_scope(scope_id)
 
     def get_id(self) -> str:
         return self._scope_id

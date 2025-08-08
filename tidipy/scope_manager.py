@@ -21,6 +21,9 @@ class ScopeManager:
 
         self._composers.add(composer)
 
+    def get_composers(self) -> set[Composer]:
+        return self._composers
+
     def get_resolver(self, scope_id: str) -> Resolver:
         return self._get_scope(scope_id).resolver()
 
