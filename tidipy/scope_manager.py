@@ -69,14 +69,11 @@ class ScopeManager:
             scope_id=scope_id,
             parent=parent,
             scope_type=scope_type,
-            composers=to_add
+            composers=to_add,
+            context=context if parent is None else context.add(parent.get_context().values())
         )
-        scope.add_context(context.values())
 
         return scope
-
-    def add_context(self, scope_id: str, values: dict[str, str]):
-        self._get_scope(scope_id).add_context(values)
 
     def clear_scope(self, scope_id: str) -> None:
         if scope_id not in self._scopes:

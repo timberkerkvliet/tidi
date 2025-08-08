@@ -17,17 +17,15 @@ class Scope:
         scope_id: str,
         scope_type: ScopeType,
         composers: set[Composer],
+        context: ScopeContext,
         parent: Optional[Scope] = None
     ):
         self._scope_id = scope_id
         self._parent = parent
         self._scope_type = scope_type
         self._dependency_bag: DependencyBag = DependencyBag.from_dependencies(composers)
-        self._context: ScopeContext = ScopeContext.empty()
+        self._context = context
         self._validate()
-
-        if parent is not None:
-            self.add_context(parent._context.values())
 
     def _validate(self):
         if self._scope_id == 'root' and self._scope_type != RootType():
@@ -67,9 +65,6 @@ class Scope:
 
     def get_ancestor_types(self) -> set[ScopeType]:
         return {scope.get_type() for scope in self.get_ancestors()}
-
-    def add_context(self, values: dict[str, str]) -> None:
-        self._context = self._context.add(values)
 
     def get_context(self) -> ScopeContext:
         return self._context
