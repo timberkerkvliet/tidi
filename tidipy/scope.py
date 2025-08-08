@@ -106,10 +106,9 @@ class Scope:
     def get_context(self) -> ScopeContext:
         return self._context
 
-    def resolver(self, context: Optional[ScopeContext] = None) -> Resolver:
-        context = self._context if context is None else context
+    def resolver(self) -> Resolver:
         return Resolver(
-            context=context,
-            parent=self._parent.resolver(context) if self._parent is not None else None,
+            context=self._context,
+            parent=self._parent.resolver() if self._parent is not None else None,
             dependency_bag=self._dependency_bag
         )

@@ -14,17 +14,19 @@ class Resolver:
         self._parent = parent
         self._dependency_bag = dependency_bag
 
+    def with_context(self, context: ScopeContext) -> Resolver:
+        return Resolver(context=context, parent=self._parent, dependency_bag=self._dependency_bag)
+
     def _get(
         self,
         dependency_type: Type,
         dependency_id: Optional[str],
-        context: Optional[ScopeContext] = None
+        context: ScopeContext
     ) -> Any:
-        context = self._context if context is None else context
         result = self._dependency_bag.find(
             dependency_type,
             dependency_id,
-            self,
+            self.with_context(context),
             context
         )
         if result is not None:
@@ -33,7 +35,7 @@ class Resolver:
         if self._parent is None:
             raise Exception(f'No candidate for type {dependency_type}')
 
-        return self._parent._get(dependency_type, dependency_id, self._context)
+        return self._parent._get(dependency_type, dependency_id, context)
 
     def __call__(self, dependency_type: Type[T], id=None) -> T:
-        return self._get(dependency_type, dependency_id=id)
+        return self._get(dependency_type, dependency_id=id, context=self._context)
