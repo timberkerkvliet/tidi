@@ -70,7 +70,6 @@ class Scope:
 
     def add_context(self, values: dict[str, str]) -> None:
         self._context = self._context.add(values)
-        self._dependency_bag = self._dependency_bag.remove(self._context.values())
 
     def get_context(self) -> ScopeContext:
         return self._context

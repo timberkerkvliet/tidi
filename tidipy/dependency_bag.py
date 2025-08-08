@@ -19,14 +19,6 @@ class DependencyBag:
     def from_dependencies(dependencies: Iterable[Dependency]) -> DependencyBag:
         return DependencyBag({dependency.get_id(): dependency for dependency in dependencies})
 
-    def add(self, dependency: Dependency) -> DependencyBag:
-        return DependencyBag(
-            {
-                **self._dependencies,
-                dependency.get_id(): dependency
-            }
-        )
-
     def remove(self, filter_values: dict[str, str]) -> DependencyBag:
         return DependencyBag(
             {
