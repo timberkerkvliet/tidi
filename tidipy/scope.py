@@ -113,24 +113,3 @@ class Scope:
             parent=self._parent.resolver(context) if self._parent is not None else None,
             dependency_bag=self._dependency_bag
         )
-
-    def _get(
-        self,
-        dependency_type: Type,
-        dependency_id: Optional[str],
-        context: Optional[ScopeContext] = None
-    ) -> Any:
-        context = self._context if context is None else context
-        result = self._dependency_bag.find(
-            dependency_type,
-            dependency_id,
-            self.resolver(context),
-            context
-        )
-        if result is not None:
-            return result
-
-        if self._parent is None:
-            raise Exception(f'No candidate for type {dependency_type}')
-
-        return self._parent._get(dependency_type, dependency_id, self._context)
