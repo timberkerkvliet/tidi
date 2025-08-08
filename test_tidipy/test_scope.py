@@ -3,7 +3,7 @@ from test_tidipy import scope_composition
 
 from test_tidipy.scope_composition import Animal, Hey, User
 
-from tidipy import scan, get_resolver, ensure_scope, ensure_root_scope, clear_scope, reset
+from tidipy import scan, get_resolver, ensure_scope, clear_scope, reset
 
 
 class TestScope(TestCase):
@@ -85,17 +85,19 @@ class TestScope(TestCase):
 
         self.assertEqual(Hey(age=17), result)
 
-    def test_cannot_ensure_root_scope_with_context_after_nesting(self):
-        ensure_scope(scope_id='child', scope_type='child')
+    def test_cannot_ensure_parent_scope_with_context_after_nesting(self):
+        ensure_scope(scope_id='parent', scope_type='parent')
+        ensure_scope(scope_id='child', scope_type='child', parent_id='parent')
 
         with self.assertRaises(Exception):
-            ensure_root_scope(context={'a': 'b'})
+            ensure_scope(scope_id='parent', scope_type='parent', context={'a': 'b'})
 
     def test_can_ensure_root_scope_after_clearing(self):
-        ensure_scope(scope_id='child', scope_type='child')
-        clear_scope('root')
+        ensure_scope(scope_id='parent', scope_type='parent')
+        ensure_scope(scope_id='child', scope_type='child', parent_id='parent')
+        clear_scope('parent')
         try:
-            ensure_root_scope(context={'a': 'b'})
+            ensure_scope(scope_id='parent', scope_type='parent', context={'a': 'b'})
         except Exception:
             self.fail()
 
