@@ -108,7 +108,11 @@ class Scope:
 
     def resolver(self, context: Optional[ScopeContext] = None) -> Resolver:
         context = self._context if context is None else context
-        return Resolver(lambda dependency_type, dependency_id: self._get(dependency_type, dependency_id, context))
+        return Resolver(
+            context=context,
+            parent=self._parent.resolver(context) if self._parent is not None else None,
+            dependency_bag=self._dependency_bag
+        )
 
     def _get(
         self,

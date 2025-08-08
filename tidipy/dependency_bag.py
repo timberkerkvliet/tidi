@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional, Type, Iterable
+from typing import Optional, Type, Iterable, TYPE_CHECKING
 
-from .resolver import Resolver
-from .dependency import Dependency, ConcreteDependency, Composer
+if TYPE_CHECKING:
+    from .resolver import Resolver
+    from .dependency import Dependency
 from .scope_context import ScopeContext
 
 
