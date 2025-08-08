@@ -80,8 +80,9 @@ class Scope:
     def get_context(self) -> ScopeContext:
         return self._context
 
-    def resolver(self) -> Resolver:
-        return Resolver(self._get)
+    def resolver(self, context: Optional[ScopeContext] = None) -> Resolver:
+        context = self._context if context is None else context
+        return Resolver(lambda dependency_type, dependency_id: self._get(dependency_type, dependency_id, context))
 
     def _get(
         self,
@@ -89,11 +90,12 @@ class Scope:
         dependency_id: Optional[str],
         context: Optional[ScopeContext] = None
     ) -> Any:
+        context = self._context if context is None else context
         result = self._dependency_bag.find(
             dependency_type,
             dependency_id,
-            self.resolver(),
-            self._context if context is None else context
+            self.resolver(context),
+            context
         )
         if result is not None:
             return result
