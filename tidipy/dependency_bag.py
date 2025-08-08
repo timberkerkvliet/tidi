@@ -12,21 +12,8 @@ class DependencyBag:
         self._dependencies = dependencies
 
     @staticmethod
-    def empty() -> DependencyBag:
-        return DependencyBag({})
-
-    @staticmethod
     def from_dependencies(dependencies: Iterable[Dependency]) -> DependencyBag:
         return DependencyBag({dependency.get_id(): dependency for dependency in dependencies})
-
-    def remove(self, filter_values: dict[str, str]) -> DependencyBag:
-        return DependencyBag(
-            {
-                dependency_id: dependency
-                for dependency_id, dependency in self._dependencies.items()
-                if dependency.get_conditions().is_fulfilled_by(filter_values)
-            }
-        )
 
     def _get_from_dependency(self, dependency: Dependency, resolver: Resolver):
         concrete = dependency.make_concrete(resolver)
