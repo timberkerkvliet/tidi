@@ -13,8 +13,8 @@ class TestContext(TestCase):
         reset()
 
     def test_production(self):
-        ensure_root_scope(context={'environment': 'prod'})
-        result = get_resolver()(StringGenerator)
+        ensure_scope(scope_id='app-prod', scope_type='app', context={'environment': 'prod'})
+        result = get_resolver('app-prod')(StringGenerator)
 
         self.assertEqual(result.generate(), 'Timber')
 
@@ -77,5 +77,3 @@ class TestContext(TestCase):
 
         with self.assertRaises(Exception):
             root_resolver(StringGenerator)
-        with self.assertRaises(Exception):
-            child_resolver(StringGenerator)

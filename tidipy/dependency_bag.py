@@ -4,6 +4,7 @@ from typing import Optional, Type
 
 from .resolver import Resolver
 from .dependency import Dependency, ConcreteDependency, Composer
+from .scope_context import ScopeContext
 
 
 class DependencyBag:
@@ -43,12 +44,14 @@ class DependencyBag:
         self,
         dependency_type: Type,
         dependency_id: Optional[str],
-        resolver: Resolver
+        resolver: Resolver,
+        scope_context: ScopeContext
     ) -> Optional[Dependency]:
         candidates = [
             dependency
             for dependency in self._dependencies.values()
             if issubclass(dependency.get_dependency_type(), dependency_type)
+            and dependency.get_conditions().is_fulfilled_by(scope_context.values())
         ]
         if dependency_id is not None:
             candidates = [dependency for dependency in candidates if dependency.get_id() == dependency_id]

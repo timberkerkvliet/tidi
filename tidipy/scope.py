@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type, TypeVar, Optional
+from typing import Type, TypeVar, Optional, Any
 
 from .dependency_bag import DependencyBag
 from .dependency import ConcreteDependency, Dependency, Composer
@@ -83,12 +83,22 @@ class Scope:
     def resolver(self) -> Resolver:
         return Resolver(self._get)
 
-    def _get(self, dependency_type: Type[T], dependency_id: Optional[str]) -> T:
-        result = self._dependency_bag.find(dependency_type, dependency_id, self.resolver())
+    def _get(
+        self,
+        dependency_type: Type,
+        dependency_id: Optional[str],
+        context: Optional[ScopeContext] = None
+    ) -> Any:
+        result = self._dependency_bag.find(
+            dependency_type,
+            dependency_id,
+            self.resolver(),
+            self._context if context is None else context
+        )
         if result is not None:
             return result
 
         if self._parent is None:
             raise Exception(f'No candidate for type {dependency_type}')
 
-        return self._parent._get(dependency_type, dependency_id)
+        return self._parent._get(dependency_type, dependency_id, self._context)
