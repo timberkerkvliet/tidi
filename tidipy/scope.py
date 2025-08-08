@@ -22,9 +22,8 @@ class Scope:
         self._scope_id = scope_id
         self._parent = parent
         self._scope_type = scope_type
-        self._dependency_bag: DependencyBag = DependencyBag.empty()
+        self._dependency_bag: DependencyBag = DependencyBag.from_dependencies(composers)
         self._context: ScopeContext = ScopeContext.empty()
-        self._add_composers(composers)
         self._validate()
 
         if parent is not None:
@@ -68,10 +67,6 @@ class Scope:
 
     def get_ancestor_types(self) -> set[ScopeType]:
         return {scope.get_type() for scope in self.get_ancestors()}
-
-    def _add_composers(self, composers: set[Composer]) -> None:
-        for composer in composers:
-            self._dependency_bag = self._dependency_bag.add(composer)
 
     def add_context(self, values: dict[str, str]) -> None:
         self._context = self._context.add(values)

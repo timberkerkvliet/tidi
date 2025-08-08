@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Type
+from typing import Optional, Type, Iterable
 
 from .resolver import Resolver
 from .dependency import Dependency, ConcreteDependency, Composer
@@ -14,6 +14,10 @@ class DependencyBag:
     @staticmethod
     def empty() -> DependencyBag:
         return DependencyBag({})
+
+    @staticmethod
+    def from_dependencies(dependencies: Iterable[Dependency]) -> DependencyBag:
+        return DependencyBag({dependency.get_id(): dependency for dependency in dependencies})
 
     def add(self, dependency: Dependency) -> DependencyBag:
         return DependencyBag(
