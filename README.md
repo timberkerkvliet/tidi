@@ -174,8 +174,8 @@ from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, get
 `ensure_scope` is a function checks that a scope with the given properties already exists and if not creates one. It takes as arguments:
 * `scope_id: str` the target scope
 * `scope_type: str` the type this scope should have
-* `parent_id: str` the ID of the parent scope
-* `context: Optional[dict[str,str]]` context of the scope
+* `parent_id: str` the ID of the parent scope (by default `root`)
+* `context: Optional[dict[str,str]]` context of the scope (by default empty)
 
 ### clear_scope
 
