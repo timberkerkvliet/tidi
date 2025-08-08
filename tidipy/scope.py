@@ -70,14 +70,6 @@ class Scope:
 
         return None
 
-    def clear(self):
-        self._children = {}
-        self._dependency_bag: DependencyBag = DependencyBag.from_dependencies({
-            composer
-            for composer in self._composers
-            if not composer.scope_type.supports_storing() or composer.scope_type == self._scope_type
-        })
-
     def remove_scope(self, scope_id: str) -> None:
         if scope_id in self._children:
             self._children.pop(scope_id)

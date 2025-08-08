@@ -43,7 +43,7 @@ def get_resolver(scope_id: str = 'root') -> Resolver:
 
 def clear_scope(scope_id: str) -> None:
     if scope_id == 'root':
-        RootScopeProvider.get().clear()
+        RootScopeProvider.reset()
         return
     return RootScopeProvider.get().remove_scope(scope_id)
 
