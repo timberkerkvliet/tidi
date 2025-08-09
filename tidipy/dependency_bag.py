@@ -5,7 +5,6 @@ from typing import Optional, Type, Iterable, TYPE_CHECKING
 if TYPE_CHECKING:
     from .resolver import Resolver
     from .dependency import Dependency
-from .scope_context import ScopeContext
 
 
 class DependencyBag:
@@ -19,14 +18,12 @@ class DependencyBag:
     def _get_candidates(
         self,
         dependency_type: Type,
-        dependency_id: Optional[str],
-        scope_context: ScopeContext
+        dependency_id: Optional[str]
     ) -> list[Dependency]:
         candidates = [
             dependency
             for dependency in self._dependencies.values()
             if issubclass(dependency.get_dependency_type(), dependency_type)
-               and dependency.get_conditions().is_fulfilled_by(scope_context.values())
         ]
         if dependency_id is not None:
             candidates = [dependency for dependency in candidates if dependency.get_id() == dependency_id]
@@ -37,10 +34,9 @@ class DependencyBag:
         self,
         dependency_type: Type,
         dependency_id: Optional[str],
-        resolver: Resolver,
-        scope_context: ScopeContext
+        resolver: Resolver
     ) -> Optional[Dependency]:
-        candidates = self._get_candidates(dependency_type, dependency_id, scope_context)
+        candidates = self._get_candidates(dependency_type, dependency_id)
 
         if len(candidates) == 0:
             return None

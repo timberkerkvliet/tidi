@@ -9,24 +9,15 @@ T = TypeVar('T')
 
 
 class Resolver:
-    def __init__(self, context: ScopeContext, parent: Optional[Resolver], dependency_bag: DependencyBag):
-        self._context = context
+    def __init__(self, parent: Optional[Resolver], dependency_bag: DependencyBag):
         self._parent = parent
         self._dependency_bag = dependency_bag
 
-    def with_context(self, context: ScopeContext) -> Resolver:
-        return Resolver(context=context, parent=self._parent, dependency_bag=self._dependency_bag)
-
-    def _get(
-        self,
-        dependency_type: Type,
-        dependency_id: Optional[str]
-    ) -> Any:
+    def __call__(self, dependency_type: Type[T], id: Optional[str] = None) -> T:
         result = self._dependency_bag.find(
             dependency_type,
-            dependency_id,
-            self,
-            self._context
+            id,
+            self
         )
         if result is not None:
             return result
@@ -34,7 +25,4 @@ class Resolver:
         if self._parent is None:
             raise Exception(f'No candidate for type {dependency_type}')
 
-        return self._parent._get(dependency_type, dependency_id)
-
-    def __call__(self, dependency_type: Type[T], id=None) -> T:
-        return self._get(dependency_type, dependency_id=id)
+        return self._parent(dependency_type, id)
