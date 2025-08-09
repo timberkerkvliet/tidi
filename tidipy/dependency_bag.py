@@ -1,28 +1,25 @@
 from __future__ import annotations
 
-from typing import Optional, Type, Iterable, TYPE_CHECKING
+from typing import Optional, Type, TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .resolver import Resolver
-    from .dependency import Dependency
+    from .dependency import Dependency, Composer
 
 
 class DependencyBag:
-    def __init__(self, dependencies: dict[str, Dependency]):
-        self._dependencies = dependencies
-
-    @staticmethod
-    def from_dependencies(dependencies: Iterable[Dependency]) -> DependencyBag:
-        return DependencyBag({dependency.get_id(): dependency for dependency in dependencies})
+    def __init__(self, composers: list[Composer]):
+        self._composers = composers
+        self._dependencies: dict[str, Any] = {}
 
     def _get_candidates(
         self,
         dependency_type: Type,
         dependency_id: Optional[str]
-    ) -> list[Dependency]:
+    ) -> list[Composer]:
         candidates = [
             dependency
-            for dependency in self._dependencies.values()
+            for dependency in self._composers
             if issubclass(dependency.get_dependency_type(), dependency_type)
         ]
         if dependency_id is not None:
@@ -43,10 +40,14 @@ class DependencyBag:
         if len(candidates) > 1:
             raise Exception(f'More than 1 candidate for type {dependency_type}')
 
-        dependency = next(iter(candidates))
-        concrete = dependency.make_concrete(resolver)
+        composer = next(iter(candidates))
+        composer_id = composer.get_id()
+        if composer_id in self._dependencies:
+            return self._dependencies[composer_id]
 
-        if dependency.supports_storing():
-            self._dependencies[dependency.get_id()] = concrete
+        dependency = composer.factory(resolver)
 
-        return concrete.value
+        if composer.supports_storing():
+            self._dependencies[composer_id] = dependency
+
+        return dependency
