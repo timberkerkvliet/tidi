@@ -41,11 +41,23 @@ class Scope:
             })
         )
 
+    def _ancestor_has_type(self, scope_type: ScopeType) -> bool:
+        if self._parent is None:
+            return False
+
+        if self._parent._scope_type == scope_type:
+            return True
+
+        return self._parent._ancestor_has_type(scope_type)
+
     def _validate(self):
         if self._ancestor_has_type(self._scope_type):
             raise Exception('Ancestor already has a scope of this type')
         if self._scope_type == Transient():
             raise Exception('Scopes can not have type transient')
+
+    def get_id(self) -> str:
+        return self._scope_id
 
     def add_scope(
         self,
@@ -59,7 +71,7 @@ class Scope:
                 parent=self,
                 scope_type=scope_type,
                 composers=self._composers,
-                context= context.add(self._context.values())
+                context= context.add(self._context)
             )
         )
 
@@ -68,9 +80,6 @@ class Scope:
 
     def remove_scope(self, scope_id: str) -> None:
         self._children.remove_descendant(scope_id)
-
-    def get_id(self) -> str:
-        return self._scope_id
 
     def matches(self, scope_type: ScopeType, parent_id: Optional[str], context: Optional[ScopeContext]) -> bool:
         if self._scope_type != scope_type:
@@ -83,15 +92,6 @@ class Scope:
             return False
 
         return True
-
-    def _ancestor_has_type(self, scope_type: ScopeType) -> bool:
-        if self._parent is None:
-            return False
-
-        if self._parent._scope_type == scope_type:
-            return True
-
-        return self._parent._ancestor_has_type(scope_type)
 
     def resolver(self) -> Resolver:
         return self._resolver
