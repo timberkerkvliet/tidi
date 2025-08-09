@@ -45,6 +45,16 @@ class TestContext(TestCase):
 
         self.assertEqual(app.generate(), 'Hello')
 
+    def test_resolve_two_apps(self):
+        ensure_scope(scope_id='app-test', scope_type='app', context={'environment': 'test'})
+        ensure_scope(scope_id='app-prod', scope_type='app', context={'environment': 'prod'})
+        prod_app = get_resolver('app-prod')(App)
+        test_app = get_resolver('app-test')(App)
+
+        self.assertEqual(test_app.generate(), 'Hello')
+        self.assertEqual(prod_app.generate(), 'Timber')
+
+
     def test_cannot_change_context(self):
         ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test'})
 

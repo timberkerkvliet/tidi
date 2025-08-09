@@ -37,6 +37,6 @@ def hello() -> HelloGenerator:
     return HelloGenerator()
 
 
-@composer
+@composer(scope_type='app')
 def app(resolve: Resolver) -> App:
     return App(resolve(StringGenerator))
