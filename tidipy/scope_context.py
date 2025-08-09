@@ -15,5 +15,8 @@ class ScopeContext:
 
         return ScopeContext({**self._values, **values})
 
+    def part_of(self, context: ScopeContext) -> bool:
+        return all(self._values[key] == context._values[key] for key in self._values.keys())
+
     def values(self) -> dict[str, str]:
         return self._values

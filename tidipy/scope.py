@@ -75,8 +75,17 @@ class Scope:
     def get_id(self) -> str:
         return self._scope_id
 
-    def get_parent(self) -> Scope:
-        return self._parent
+    def matches(self, scope_type: ScopeType, parent_id: Optional[str], context: Optional[ScopeContext]) -> bool:
+        if self._scope_type != scope_type:
+            return False
+        if self._parent is None and parent_id is not None:
+            return False
+        if self._parent is not None and self._parent.get_id() != parent_id:
+            return False
+        if context is not None and not context.part_of(self._context):
+            return False
+
+        return True
 
     def get_type(self) -> ScopeType:
         return self._scope_type

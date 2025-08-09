@@ -26,14 +26,7 @@ def ensure_scope(
         )
         return
 
-
-    if existing_scope.get_type() != parsed_scope_type:
-        raise Exception
-    if existing_scope.get_parent() is None and parent_id is not None:
-        raise Exception
-    if existing_scope.get_parent() is not None and existing_scope.get_parent().get_id() != parent_id:
-        raise Exception
-    if context is not None and existing_scope.get_context() != parsed_context:
+    if not existing_scope.matches(parsed_scope_type, parent_id, parsed_context):
         raise Exception
 
 
