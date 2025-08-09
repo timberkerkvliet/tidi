@@ -10,7 +10,9 @@ class ScopeContext:
         return ScopeContext({})
 
     def add(self, context: ScopeContext) -> ScopeContext:
-        if not set(context.values().keys()).isdisjoint(set(self._values.keys())):
+        common_keys = set(context.values().keys()).intersection(set(self._values.keys()))
+
+        if any(self._values[key] != context.values()[key] for key in common_keys):
             raise Exception('Can only add values to scope context, not override values')
 
         return ScopeContext({**self._values, **context.values()})

@@ -100,3 +100,10 @@ class TestContext(TestCase):
         resolver = get_resolver('tenant-a')
 
         self.assertEqual('Hello', resolver(str))
+
+    def test_child_scope_may_reaffirm_context(self):
+        ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test'})
+        try:
+            ensure_scope(scope_id='tenant-a', scope_type='tenant', parent_id='app', context={'environment': 'test'})
+        except Exception:
+            self.fail()
