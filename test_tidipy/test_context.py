@@ -55,7 +55,6 @@ class TestContext(TestCase):
         self.assertEqual(test_app.generate(), 'Hello')
         self.assertEqual(prod_app.generate(), 'Timber')
 
-
     def test_cannot_change_context(self):
         ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test'})
 
@@ -94,3 +93,10 @@ class TestContext(TestCase):
 
         with self.assertRaises(Exception):
             resolver(str)
+
+    def test_child_scope_inherits_parent_context(self):
+        ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test'})
+        ensure_scope(scope_id='tenant-a', scope_type='tenant', parent_id='app')
+        resolver = get_resolver('tenant-a')
+
+        self.assertEqual('Hello', resolver(str))

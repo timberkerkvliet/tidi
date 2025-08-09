@@ -40,3 +40,8 @@ def hello() -> HelloGenerator:
 @composer(scope_type='app')
 def app(resolve: Resolver) -> App:
     return App(resolve(StringGenerator))
+
+
+@composer(scope_type='tenant')
+def string(resolve: Resolver) -> str:
+    return resolve(App).generate()
