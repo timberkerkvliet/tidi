@@ -4,7 +4,7 @@ import builtins
 import inspect
 from typing import TypeVar, Callable, get_type_hints, Optional
 
-from .conditions import parse_conditions
+from .context_filter import parse_context_filter
 from .composer import Composer
 from .resolver import Resolver
 from .scope_type import parse_scope_type
@@ -28,7 +28,7 @@ def composer(
         return Composer(
             id=str(builtins.id(func)) if id is None else id,
             scope_type=parsed_scope_type,
-            conditions=parse_conditions(**kwargs),
+            context_filter=parse_context_filter(**kwargs),
             factory=func if has_parameter else lambda resolve: func(),
             dependency_type=get_type_hints(func).get('return', object)
         )

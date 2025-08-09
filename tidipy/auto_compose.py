@@ -4,7 +4,7 @@ from typing import Type, Optional
 
 from .auto_factory import AutoFactory
 from .composer import Composer
-from .conditions import parse_conditions
+from .context_filter import parse_context_filter
 from .composer_repository import ComposerRepository
 from .scope_type import parse_scope_type
 
@@ -22,7 +22,7 @@ def auto_compose(
     composer = Composer(
             id=str(builtins.id(dependency_type)) if id is None else id,
             scope_type=parse_scope_type(scope_type),
-            conditions=parse_conditions(**kwargs),
+            context_filter=parse_context_filter(**kwargs),
             dependency_type=dependency_type,
             factory=factory
         )

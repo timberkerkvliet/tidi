@@ -107,22 +107,22 @@ If both `InMemoryRepository` and `PostgresRepository` have their own composers, 
 
 You can use _scope context_ — key-value tags that express context-specific choices.
 ```
-@composer(stage='prod')
+@composer(scope_type='app', stage='prod')
 def postgres_repository() -> PostgresRepository:
     return PostgresRepository()
 
-@composer(stage='test')
+@composer(scope_type='app', stage='test')
 def in_memory_repository() -> InMemoryRepository:
     return InMemoryRepository()
 ```
-The line `@composer(stage='prod')` means that if the key `stage` is part of the scope context, this composer will only
-be considered if it has value `prod`.
+The line `@composer(scope_type='app', stage='prod')` means that if the key `stage` is part of the scope context, this composer will only
+be considered if it has value `prod`. Note that we use scope type `app` here. The root scope has no context, so it is not possible to define composers with context filters.
 
 We add context to our scope with:
 ```
 ensure_scope(scope_id='app', scope_type='app', context={'stage': 'test'})
 ```
-This now means that `resolve(Repository)` will resolve to an `InMemoryRepository`.
+This now means that the resolver of the `app` scope will resolve to an `InMemoryRepository`.
 
 
 ## Resolve by id
