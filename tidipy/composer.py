@@ -26,11 +26,5 @@ class Composer:
         if self.scope_type == RootType() and not self.conditions.is_empty():
             raise Exception('Dependency with root scope type cannot have conditions')
 
-    def get_dependency_type(self) -> Type:
-        return self.dependency_type
-
-    def get_conditions(self) -> Conditions:
-        return self.conditions
-
     def supports_storing(self) -> bool:
         return self.scope_type.supports_storing()

@@ -37,7 +37,7 @@ class Scope:
                 composer
                 for composer in self._composers
                 if not composer.scope_type.supports_storing() or composer.scope_type == self._scope_type
-                and composer.get_conditions().is_fulfilled_by(self._context.values())
+                and composer.conditions.is_fulfilled_by(self._context.values())
             ])
         )
 

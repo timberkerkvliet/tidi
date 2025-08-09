@@ -20,10 +20,10 @@ class DependencyBag:
         candidates = [
             composer
             for composer in self._composers
-            if issubclass(composer.get_dependency_type(), dependency_type)
+            if issubclass(composer.dependency_type, dependency_type)
         ]
         if dependency_id is not None:
-            candidates = [composer for composer in candidates if composer.get_id() == dependency_id]
+            candidates = [composer for composer in candidates if composer.id == dependency_id]
 
         return candidates
 
@@ -41,7 +41,7 @@ class DependencyBag:
             raise Exception(f'More than 1 candidate for type {dependency_type}')
 
         composer = next(iter(candidates))
-        composer_id = composer.get_id()
+        composer_id = composer.id
         if composer_id in self._dependencies:
             return self._dependencies[composer_id]
 
