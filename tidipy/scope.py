@@ -26,8 +26,7 @@ class Scope:
         self._children: Children[Scope] = Children(self, {})
         self._scope_type = scope_type
         self._composers = composers
-
-        self._context = context if parent is None else context.add(parent.get_context().values())
+        self._context = context
 
         self._resolver = Resolver(
             context=self._context,
@@ -58,13 +57,15 @@ class Scope:
         scope_type: ScopeType,
         context: ScopeContext
     ):
-        self._children.add_child(Scope(
-            scope_id=scope_id,
-            parent=self,
-            scope_type=scope_type,
-            composers=self._composers,
-            context=context
-        ))
+        self._children.add_child(
+            Scope(
+                scope_id=scope_id,
+                parent=self,
+                scope_type=scope_type,
+                composers=self._composers,
+                context= context.add(self._context.values())
+            )
+        )
 
     def find_scope(self, scope_id: str) -> Optional[Scope]:
         return self._children.find_descendant(scope_id)
@@ -98,9 +99,6 @@ class Scope:
 
     def get_ancestor_types(self) -> set[ScopeType]:
         return {scope.get_type() for scope in self.get_ancestors()}
-
-    def get_context(self) -> ScopeContext:
-        return self._context
 
     def resolver(self) -> Resolver:
         return self._resolver
