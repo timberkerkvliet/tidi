@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TypeVar, Optional
 
+from .children import Children
 from .dependency import Composer
 from .dependency_bag import DependencyBag
 from .resolver import Resolver
@@ -22,7 +23,7 @@ class Scope:
     ):
         self._scope_id = scope_id
         self._parent = parent
-        self._children: dict[str, Scope] = {}
+        self._children: Children[Scope] = Children(self, {})
         self._scope_type = scope_type
         self._composers = composers
 
@@ -57,31 +58,19 @@ class Scope:
         scope_type: ScopeType,
         context: ScopeContext
     ):
-        self._children[scope_id] = Scope(
+        self._children.add_child(Scope(
             scope_id=scope_id,
             parent=self,
             scope_type=scope_type,
             composers=self._composers,
             context=context
-        )
+        ))
 
     def find_scope(self, scope_id: str) -> Optional[Scope]:
-        if scope_id == self._scope_id:
-            return self
-
-        for child_id, child in self._children.items():
-            result = child.find_scope(scope_id)
-            if result is not None:
-                return result
-
-        return None
+        return self._children.find_descendant(scope_id)
 
     def remove_scope(self, scope_id: str) -> None:
-        if scope_id in self._children:
-            self._children.pop(scope_id)
-
-        for child_id, child in self._children.items():
-            child.remove_scope(scope_id)
+        self._children.remove_descendant(scope_id)
 
     def get_id(self) -> str:
         return self._scope_id
