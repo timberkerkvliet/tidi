@@ -15,11 +15,13 @@ def ensure_scope(
 ) -> None:
     parsed_scope_type=parse_scope_type(scope_type)
     parsed_context=ScopeContext(context) if context is not None else ScopeContext.empty()
+    root_scope = RootScopeProvider.get()
 
-    existing_scope = RootScopeProvider.get().find_scope(scope_id)
+    existing_scope = root_scope.find_scope(scope_id)
 
     if existing_scope is None:
-        RootScopeProvider.get().find_scope(parent_id).add_scope(
+        parent_scope = root_scope.find_scope(parent_id)
+        parent_scope.add_scope(
             scope_id=scope_id,
             scope_type=parsed_scope_type,
             context=parsed_context
