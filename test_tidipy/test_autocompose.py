@@ -49,3 +49,13 @@ class TestAutoCompose(TestCase):
         result = resolver(EmptyInit)
 
         self.assertEqual(result.hey(), 'hey')
+
+    def test_cannot_add_conditions_to_root_scoped_dependency(self):
+        with self.assertRaises(Exception):
+            auto_compose(PointWrapper, environment='test')
+
+    def test_can_add_conditions_to_root_scoped_dependency(self):
+        try:
+            auto_compose(PointWrapper, scope_type='iets', environment='test')
+        except Exception:
+            self.fail()

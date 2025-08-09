@@ -20,6 +20,9 @@ class Conditions:
     def is_fulfilled_by(self, value_map: dict[str, str]) -> bool:
         return all(condition.is_fulfilled_by(value_map) for condition in self.conditions)
 
+    def is_empty(self) -> bool:
+        return len(self.conditions) == 0
+
 
 def parse_conditions(**kwargs) -> Conditions:
     return Conditions(

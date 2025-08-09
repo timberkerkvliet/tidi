@@ -27,17 +27,6 @@ class App:
         return self._generator.generate()
 
 
-@composer(environment='test')
-def test_string() -> str:
-    return 'test'
-
-
-@composer(environment='prod')
-def prod_string() -> str:
-    return 'prod'
-
-
-
 @composer(scope_type='app', environment='prod')
 def timber() -> TimberGenerator:
     return TimberGenerator()

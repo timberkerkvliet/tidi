@@ -6,7 +6,7 @@ from typing import Type, Any, Callable
 
 from .conditions import Conditions
 from .resolver import Resolver
-from .scope_type import ScopeType
+from .scope_type import ScopeType, RootType
 
 
 class Dependency(ABC):
@@ -66,6 +66,10 @@ class Composer(Dependency):
 
     def __hash__(self) -> int:
         return hash(self.id)
+
+    def __post_init__(self):
+        if self.scope_type == RootType() and not self.conditions.is_empty():
+            raise Exception('Dependency with root scope type cannot have conditions')
 
     def get_dependency_type(self) -> Type:
         return self.dependency_type
