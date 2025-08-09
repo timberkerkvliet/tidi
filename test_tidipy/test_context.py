@@ -107,3 +107,17 @@ class TestContext(TestCase):
             ensure_scope(scope_id='tenant-a', scope_type='tenant', parent_id='app', context={'environment': 'test'})
         except Exception:
             self.fail()
+
+    def test_ensure_may_without_context(self):
+        ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test'})
+        try:
+            ensure_scope(scope_id='app', scope_type='app')
+        except Exception:
+            self.fail()
+
+    def test_ensure_may_with_lrdd_context(self):
+        ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test', 'a': 'b'})
+        try:
+            ensure_scope(scope_id='app', scope_type='app', context={'a': 'b'})
+        except Exception:
+            self.fail()

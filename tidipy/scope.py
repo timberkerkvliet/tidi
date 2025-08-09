@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TypeVar, Optional
+from typing import Optional
 
 from .children import Children
 from .composer import Composer
@@ -8,8 +8,6 @@ from .dependency_bag import DependencyBag
 from .resolver import Resolver
 from .scope_context import ScopeContext
 from .scope_type import ScopeType, Transient
-
-T = TypeVar('T')
 
 
 class Scope:
