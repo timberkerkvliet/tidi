@@ -105,7 +105,7 @@ class PostgresRepository(Repository):
 
 If both `InMemoryRepository` and `PostgresRepository` have their own composers, then the type Repository becomes ambiguous—TiDIpy won’t know which one to resolve by default.
 
-You can use _scope context_ — key-value tags that express context-specific choices.
+You can use _scope context_ — key-value tags that express context-specific choices. Composers can have a scope context filter:
 ```
 @composer(scope_type='app', stage='prod')
 def postgres_repository() -> PostgresRepository:
@@ -116,7 +116,7 @@ def in_memory_repository() -> InMemoryRepository:
     return InMemoryRepository()
 ```
 The line `@composer(scope_type='app', stage='prod')` means that if the key `stage` is part of the scope context, this composer will only
-be considered if it has value `prod`. Note that we use scope type `app` here. The root scope has no context, so it is not possible to define composers with context filters.
+be considered if it has value `prod`. Note that we use scope type `app` here. The root scope has no context, so it is not possible to define composers in the root scope with context filters.
 
 We add context to our scope with:
 ```
