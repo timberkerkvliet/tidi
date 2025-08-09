@@ -7,7 +7,7 @@ from .dependency import Composer
 from .dependency_bag import DependencyBag
 from .resolver import Resolver
 from .scope_context import ScopeContext
-from .scope_type import ScopeType, RootType, Transient
+from .scope_type import ScopeType, Transient
 
 T = TypeVar('T')
 
@@ -42,7 +42,7 @@ class Scope:
         )
 
     def _validate(self):
-        if self._scope_type in self.get_ancestor_types():
+        if self._ancestor_has_type(self._scope_type):
             raise Exception('Ancestor already has a scope of this type')
         if self._scope_type == Transient():
             raise Exception('Scopes can not have type transient')
@@ -84,17 +84,14 @@ class Scope:
 
         return True
 
-    def get_type(self) -> ScopeType:
-        return self._scope_type
-
-    def get_ancestors(self) -> set[Scope]:
+    def _ancestor_has_type(self, scope_type: ScopeType) -> bool:
         if self._parent is None:
-            return set()
+            return False
 
-        return {self._parent} | self._parent.get_ancestors()
+        if self._parent._scope_type == scope_type:
+            return True
 
-    def get_ancestor_types(self) -> set[ScopeType]:
-        return {scope.get_type() for scope in self.get_ancestors()}
+        return self._parent._ancestor_has_type(scope_type)
 
     def resolver(self) -> Resolver:
         return self._resolver
