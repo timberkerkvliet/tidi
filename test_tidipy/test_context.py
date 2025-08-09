@@ -20,13 +20,13 @@ class TestContext(TestCase):
 
     def test_specific_type(self):
         ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test'})
-        result = get_resolver()(HelloGenerator)
+        result = get_resolver('app')(HelloGenerator)
 
         self.assertEqual(result.generate(), 'Hello')
 
     def test_resolves_with_additional_values(self):
         ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test', 'a': 'b'})
-        result = get_resolver()(HelloGenerator)
+        result = get_resolver('app')(HelloGenerator)
 
         self.assertEqual(result.generate(), 'Hello')
 
@@ -35,7 +35,8 @@ class TestContext(TestCase):
             get_resolver()(StringGenerator)
 
     def test_can_resolve_specific(self):
-        result = get_resolver()(TimberGenerator)
+        ensure_scope(scope_id='app', scope_type='app', context={'environment': 'prod'})
+        result = get_resolver('app')(TimberGenerator)
 
         self.assertEqual(result.generate(), 'Timber')
 
@@ -86,3 +87,10 @@ class TestContext(TestCase):
 
         with self.assertRaises(Exception):
             root_resolver(StringGenerator)
+
+    def test_adding_context_to_child_scope_does_not_influence_root_dependencies(self):
+        ensure_scope(scope_id='child', scope_type='child', context={'environment': 'test'})
+        resolver = get_resolver('child')
+
+        with self.assertRaises(Exception):
+            resolver(str)
