@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import TypeVar, Type, Callable, Any, Optional
+from typing import TypeVar, Type, Optional
 
 from tidipy.dependency_bag import DependencyBag
-from tidipy.scope_context import ScopeContext
 
 T = TypeVar('T')
 
@@ -14,11 +13,7 @@ class Resolver:
         self._dependency_bag = dependency_bag
 
     def __call__(self, dependency_type: Type[T], id: Optional[str] = None) -> T:
-        result = self._dependency_bag.find(
-            dependency_type,
-            id,
-            self
-        )
+        result = self._dependency_bag.find(dependency_type, id, self)
         if result is not None:
             return result
 
