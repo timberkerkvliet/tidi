@@ -148,7 +148,10 @@ Since IDs are unique, this guarantees an unambiguous resolution.
 
 ## Integration with starlette/fastapi
 
-See  [FastAPI example](https://github.com/timberkerkvliet/TiDIpy/blob/main/examples/fastapi_app.py).
+If you want to stick as closely as possible to the typical FastAPI way of working, you can integrate a FastAPI app by connecting FastAPI’s dependency injection system directly to TiDIpy.
+See the  [first FastAPI example](https://github.com/timberkerkvliet/TiDIpy/blob/main/examples/fastapi1.py). In this approach, you define your controllers as FastAPI “endpoints” in the usual style, while still benefiting from TiDIpy’s dependency resolution. However, this does slightly break TiDIpy’s promise of fully separating clients from the application’s composition layer, since endpoints ends up knowing about the composition.
+
+If you’re comfortable with a slightly less idiomatic FastAPI style, you can instead use the FastApiAdapter and create your own class-based controllers. This pattern is illustrated in the  [second FastAPI example](https://github.com/timberkerkvliet/TiDIpy/blob/main/examples/fastapi2.py).
 
 ## API reference
 
