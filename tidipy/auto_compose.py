@@ -3,7 +3,7 @@ import inspect
 from typing import Type, Optional
 
 from .auto_factory import AutoFactory
-from .dependency import Composer
+from .composer import Composer
 from .conditions import parse_conditions
 from .composer_repository import ComposerRepository
 from .scope_type import parse_scope_type

@@ -1,4 +1,4 @@
-from .dependency import Composer
+from .composer import Composer
 
 
 class ComposerRepository:

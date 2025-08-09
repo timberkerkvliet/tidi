@@ -1,39 +1,36 @@
 from __future__ import annotations
 
-import builtins
-import inspect
-from typing import TypeVar, Callable, get_type_hints, Optional
+from dataclasses import dataclass
+from typing import Type, Any, Callable
 
-from .conditions import parse_conditions
-from .dependency import Composer
+from .conditions import Conditions
 from .resolver import Resolver
-from .scope_type import parse_scope_type
-
-T = TypeVar('T')
-
-FactoryMethod = Callable[[Resolver], T]
+from .scope_type import ScopeType, RootType
 
 
-def composer(
-    factory: Optional[Callable] = None,
-    *,
-    id: Optional[str] = None,
-    scope_type: str = 'root',
-    **kwargs: str | set[str]
-):
-    parsed_scope_type = parse_scope_type(scope_type)
+@dataclass(frozen=True)
+class Composer:
+    id: str
+    scope_type: ScopeType
+    conditions: Conditions
+    factory: Callable[[Resolver], Any]
+    dependency_type: Type
 
-    def inner(func: Callable):
-        has_parameter = len(inspect.signature(func).parameters) > 0
-        return Composer(
-            id=str(builtins.id(func)) if id is None else id,
-            scope_type=parsed_scope_type,
-            conditions=parse_conditions(**kwargs),
-            factory=func if has_parameter else lambda resolve: func(),
-            dependency_type=get_type_hints(func).get('return', object)
-        )
+    def get_id(self) -> str:
+        return self.id
 
-    if factory is not None:
-        return inner(factory)
+    def __hash__(self) -> int:
+        return hash(self.id)
 
-    return inner
+    def __post_init__(self):
+        if self.scope_type == RootType() and not self.conditions.is_empty():
+            raise Exception('Dependency with root scope type cannot have conditions')
+
+    def get_dependency_type(self) -> Type:
+        return self.dependency_type
+
+    def get_conditions(self) -> Conditions:
+        return self.conditions
+
+    def supports_storing(self) -> bool:
+        return self.scope_type.supports_storing()

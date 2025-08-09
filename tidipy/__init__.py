@@ -1,4 +1,4 @@
-from .composer import composer
+from .composer_decorator import composer
 from .resolver import Resolver
 from .scan import scan
 from .scope_api import ensure_scope, clear_scope, reset, get_resolver

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TypeVar, Optional
 
 from .children import Children
-from .dependency import Composer
+from .composer import Composer
 from .dependency_bag import DependencyBag
 from .resolver import Resolver
 from .scope_context import ScopeContext

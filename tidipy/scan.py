@@ -2,7 +2,7 @@ import importlib
 import inspect
 from pathlib import Path
 
-from .dependency import Composer
+from .composer import Composer
 from .composer_repository import ComposerRepository
 
 

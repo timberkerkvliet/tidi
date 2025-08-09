@@ -4,7 +4,7 @@ from typing import Optional, Type, TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .resolver import Resolver
-    from .dependency import Dependency, Composer
+    from .dependency import Composer
 
 
 class DependencyBag:
@@ -18,12 +18,12 @@ class DependencyBag:
         dependency_id: Optional[str]
     ) -> list[Composer]:
         candidates = [
-            dependency
-            for dependency in self._composers
-            if issubclass(dependency.get_dependency_type(), dependency_type)
+            composer
+            for composer in self._composers
+            if issubclass(composer.get_dependency_type(), dependency_type)
         ]
         if dependency_id is not None:
-            candidates = [dependency for dependency in candidates if dependency.get_id() == dependency_id]
+            candidates = [composer for composer in candidates if composer.get_id() == dependency_id]
 
         return candidates
 
@@ -32,7 +32,7 @@ class DependencyBag:
         dependency_type: Type,
         dependency_id: Optional[str],
         resolver: Resolver
-    ) -> Optional[Dependency]:
+    ) -> Optional[Any]:
         candidates = self._get_candidates(dependency_type, dependency_id)
 
         if len(candidates) == 0:
