@@ -27,17 +27,19 @@ class Scope:
         self._scope_type = scope_type
         self._composers = composers
         self._context = context
+        self._resolver = self._create_resolver()
+        self._validate()
 
-        self._resolver = Resolver(
+    def _create_resolver(self) -> Resolver:
+        return Resolver(
             context=self._context,
             parent=self._parent.resolver() if self._parent is not None else None,
             dependency_bag=DependencyBag.from_dependencies({
                 composer
-                for composer in composers
-                if not composer.scope_type.supports_storing() or composer.scope_type == scope_type
+                for composer in self._composers
+                if not composer.scope_type.supports_storing() or composer.scope_type == self._scope_type
             })
         )
-        self._validate()
 
     def _validate(self):
         if self._scope_type in self.get_ancestor_types():
