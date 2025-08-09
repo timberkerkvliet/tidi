@@ -40,12 +40,6 @@ class Scope:
         self._validate()
 
     def _validate(self):
-        if self._scope_id == 'root' and self._scope_type != RootType():
-            raise Exception('Only root scope can have root type')
-        if self._scope_id != 'root' and self._scope_type == RootType():
-            raise Exception('Only root scope can have root type')
-        if self._scope_id == 'root' and self._parent is not None:
-            raise Exception('Root scope can not have parent')
         if self._scope_type in self.get_ancestor_types():
             raise Exception('Ancestor already has a scope of this type')
         if self._scope_type == Transient():
