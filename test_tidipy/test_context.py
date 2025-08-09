@@ -115,7 +115,7 @@ class TestContext(TestCase):
         except Exception:
             self.fail()
 
-    def test_ensure_may_with_lrdd_context(self):
+    def test_ensure_may_with_less_context(self):
         ensure_scope(scope_id='app', scope_type='app', context={'environment': 'test', 'a': 'b'})
         try:
             ensure_scope(scope_id='app', scope_type='app', context={'a': 'b'})
