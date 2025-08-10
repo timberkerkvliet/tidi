@@ -16,19 +16,17 @@ def walk_modules(path, prefix):
                 mod = importlib.import_module(modname)
                 yield mod
             except Exception:
-                pass
+                continue
 
 
 def scan(package):
     package_path = Path(package.__file__).parent
     package_name = package.__name__
 
-    # Add the package module itself
     try:
         mod = importlib.import_module(package_name)
         yield_mods = [mod]
     except Exception as e:
-        print(f"Error importing {package_name}: {e}")
         yield_mods = []
 
     # Add all submodules
