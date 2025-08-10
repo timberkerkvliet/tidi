@@ -37,7 +37,7 @@ jobs:
           python-version: 3.13
 
       - name: Install coverage
-        run: pip install coverage
+        run: pip install coverage coverage-badge
 
       - name: Run tests
         run: coverage run -m unittest
