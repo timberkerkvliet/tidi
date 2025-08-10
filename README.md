@@ -4,11 +4,10 @@
 
 - [Intro](#intro)  
 - [In the spirit of real DI](#in-the-spirit-of-real-di)  
-- [Scopes and lifetime management](#scopes-and-lifetime-management)  
-  - [A tree of scopes](#a-tree-of-scopes)  
-- [Working with scope context](#working-with-scope-context)  
-- [Resolve by id](#resolve-by-id)  
-- [Integration with starlette/fastapi](#integration-with-starlettefastapi)  
+- [Scope lifetime management](#scope-lifetime-management)
+- [Scope context](#scope-context)
+- [The scope tree](#the-scope-tree)
+- [Integration with fastapi](#integration-with-fastapi)  
 - [API Reference](#api-reference)
 
 ## Intro
@@ -39,7 +38,7 @@ auto_compose(MyClient)
 ```
 This allows TiDIpy to automatically resolve and compose the dependencies in many cases, reducing boilerplate while preserving separation of concerns.
 
-## Scopes and lifetime management
+## Scope lifetime management
 
 Composition isn't just about specifying how dependencies are created and connected—it's also about managing _when_ they are instantiated and cleaned up. Not every object in the dependency graph needs to be created upfront, and clients should stay unaware of the timing or lifecycle of their dependencies.
 
@@ -61,32 +60,7 @@ clear_scope('my-request')
 ```
 This ensures that scoped dependencies are properly cleaned up, giving you fine-grained control over object lifetimes.
 
-### A tree of scopes
-
-Each scope in the system has a parent scope. If no parent is explicitly defined, the scope defaults to having `root` as its parent. Scopes form a hierarchy, and any scope can access the dependencies registered in its own context as well as those of all its ancestors.
-
-Here's how you can define dependencies in different scopes:
-```
-auto_compose(DependencyA)  # Registered in the root scope
-auto_compose(DependencyB, scope_type='tenant')  # Registered in tenant-level scope
-auto_compose(DependencyC, scope_type='request')  # Registered in request-level scope
-```
-
-Now we can start a request scope _within_ a specific tenant scope:
-```
-ensure_scope(scope_id='my-tenant', scope_type='tenant')  # Create tenant scope
-ensure_scope(scope_id='my-request', scope_type='request', parent_id='my-tenant')  # Create request scope with tenant as parent
-
-resolver = get_resolver('my-request')  # Get a resolver for the request scope
-```
-Once the scopes are in place, you can resolve dependencies from the request scope. The resolver will automatically traverse up the scope hierarchy as needed:
-```
-resolver(DependencyA)  # Resolved from root scope
-resolver(DependencyB)  # Resolved from tenant scope
-resolver(DependencyC)  # Resolved from request scope
-
-```
-## Working with scope context
+## Scope context
 
 A common scenario in dependency injection is when a client depends on an interface that has multiple implementations. In such cases, the composition logic must decide which concrete implementation to provide.
 ```
@@ -124,29 +98,46 @@ ensure_scope(scope_id='app', scope_type='app', context={'stage': 'test'})
 ```
 This now means that the resolver of the `app` scope will resolve to an `InMemoryRepository`.
 
+## The scope tree
 
-## Resolve by id
+Scopes in the system form a hierarchy.
+Each scope has exactly one parent. If you don’t explicitly set a parent, it defaults to root.
 
-Sometimes, you need multiple composers that return the same type but represent different roles or configurations. By assigning an explicit id to each composer, you can resolve the exact one you need without ambiguity.
+A scope can resolve dependencies registered in:
 
+* its own context, and
+* all of its ancestor scopes.
+
+Here's how you can define dependencies in different scopes:
 ```
-@composer(id='primary-db')
-def primary_connection() -> DatabaseConnection:
-    return DatabaseConnection(dsn='postgresql://primary.db.local')
-
-@composer(id='analytics-db')
-def analytics_connection() -> DatabaseConnection:
-    return DatabaseConnection(dsn='postgresql://analytics.db.local')
+auto_compose(DependencyA)  # Registered in the root scope
+auto_compose(DependencyB, scope_type='tenant')  # Registered in a tenant scope
+auto_compose(DependencyC, scope_type='request')  # Registered in a request scope
 ```
-Here, both composers return `DatabaseConnection`, but they're configured for different purposes. Resolving `DatabaseConnection` is ambiguous.
 
-Instead, you can resolve them explicitly by ID:
+You can nest scopes to reflect lifetime and context relationships.
+For example, start a request scope within a specific tenant scope:
 ```
-resolve(DatabaseConnection, id='primary-db')
-```
-Since IDs are unique, this guarantees an unambiguous resolution.
+ensure_scope(scope_id='my-tenant', scope_type='tenant')  # Create tenant scope
+ensure_scope(scope_id='my-request', scope_type='request', parent_id='my-tenant')  # Create request scope with tenant as parent
 
-## Integration with starlette/fastapi
+resolver = get_resolver('my-request')  # Get a resolver for the request scope
+```
+Once scopes are set up, the resolver automatically looks upward through the scope tree if a dependency isn’t found locally:
+```
+resolver(DependencyA)  # Resolved from root scope
+resolver(DependencyB)  # Resolved from tenant scope
+resolver(DependencyC)  # Resolved from request scope
+```
+Why create a child scope? A scope might have children for two main reasons:
+
+1. Shorter lifetime – The child starts later and/or ends sooner than its parent.
+Example: a scope for handling a web request exists only while the request is processed.
+2. Extra context – The child has additional context needed for resolution.
+Example: an tenant-specific scope may carry configuration without having a shorter lifetime than its parent (application or root).
+
+
+## Integration with fastapi
 
 If you want to stick as closely as possible to the typical FastAPI way of working, you can integrate a FastAPI app by connecting FastAPI’s dependency injection system directly to TiDIpy.
 See the  [first FastAPI example](https://github.com/timberkerkvliet/TiDIpy/blob/main/examples/fastapi1.py). In this approach, you define your controllers as FastAPI “endpoints” in the usual style, while still benefiting from TiDIpy’s dependency resolution. However, this does slightly break TiDIpy’s promise of fully separating clients from the application’s composition layer, since endpoints ends up knowing about the composition.
@@ -158,7 +149,7 @@ If you’re comfortable with a slightly less idiomatic FastAPI style, you can in
 Everything can be imported from the root of the package:
 
 ```
-from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, get_resolver, scan
+from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, get_resolver, scan, Resolver
 ```
 
 ### composer
@@ -167,6 +158,8 @@ from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, get
 * `id: str`: the id of this dependency
 * `scope_type: str`: the types of scopes in which it is available
 * `kwargs: str | set[str]`: the values in the scope context for which this dependency is available
+
+It decorates a factory function that takes a `Resolver` as a optional argument.
 
 ### auto_compose
 
@@ -190,7 +183,34 @@ from TiDIpy import composer, auto_compose, ensure_scope, clear_scope, reset, get
 
 ### get_resolver
 
-`get_resolver` is a function that gets the resolver of a certain scope. It takes `scope_id: str` as argument to indicate the target scope.
+`get_resolver` is a function that gets the resolver of a certain scope. It takes `scope_id: str` as argument to indicate the target scope. Its return type is `Resolver`
+
+### Resolver
+
+The basic usage of a `Resolver` is:
+```
+resolve(DatabaseConnection)
+```
+which returns something of the same type.
+
+Sometimes, you need multiple composers that return the same type but represent different roles or configurations. By assigning an explicit id to each composer, you can resolve the exact one you need without ambiguity.
+
+```
+@composer(id='primary-db')
+def primary_connection() -> DatabaseConnection:
+    return DatabaseConnection(dsn='postgresql://primary.db.local')
+
+@composer(id='analytics-db')
+def analytics_connection() -> DatabaseConnection:
+    return DatabaseConnection(dsn='postgresql://analytics.db.local')
+```
+
+You can resolve them explicitly by ID:
+```
+resolve(DatabaseConnection, id='primary-db')
+```
+Since IDs are unique, this guarantees an unambiguous resolution.
+
 
 ### scan
 
