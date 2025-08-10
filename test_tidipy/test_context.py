@@ -31,6 +31,7 @@ class TestContext(TestCase):
         self.assertEqual(result.generate(), 'Hello')
 
     def test_cannot_resolve_with_multiple_candidates(self):
+        ensure_scope(scope_id='app', scope_type='app')
         with self.assertRaises(Exception):
             get_resolver('app')(StringGenerator)
 
