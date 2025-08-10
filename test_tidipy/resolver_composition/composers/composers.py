@@ -1,7 +1,5 @@
-from dataclasses import dataclass
-
+from test_tidipy.resolver_composition.buzz import Buzz
 from tidipy import composer, Resolver
-
 
 @composer(id='timber')
 def my_name() -> str:
@@ -11,11 +9,6 @@ def my_name() -> str:
 @composer
 def other_name() -> str:
     return 'Benji'
-
-
-@dataclass
-class Buzz:
-    description: str
 
 
 @composer

@@ -6,21 +6,22 @@ from .composer import Composer
 from .composer_repository import ComposerRepository
 
 
+def walk_modules(path, prefix):
+    for item in path.iterdir():
+        if item.is_dir():
+            yield from walk_modules(item, f"{prefix}.{item.name}")
+        elif item.suffix == '.py' and item.name != '__init__.py':
+            modname = f"{prefix}.{item.stem}"
+            try:
+                mod = importlib.import_module(modname)
+                yield mod
+            except Exception:
+                pass
+
+
 def scan(package):
     package_path = Path(package.__file__).parent
     package_name = package.__name__
-
-    def walk_modules(path, prefix):
-        for item in path.iterdir():
-            if item.is_dir():
-                yield from walk_modules(item, f"{prefix}.{item.name}")
-            elif item.suffix == '.py' and item.name != '__init__.py':
-                modname = f"{prefix}.{item.stem}"
-                try:
-                    mod = importlib.import_module(modname)
-                    yield mod
-                except Exception:
-                    pass
 
     # Add the package module itself
     try:
