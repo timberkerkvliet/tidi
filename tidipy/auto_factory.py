@@ -9,9 +9,6 @@ class AutoFactory:
         self._dependency_type = dependency_type
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, AutoFactory):
-            return False
-
         return self._dependency_type == other._dependency_type
 
     def __call__(self, resolver: Resolver):
