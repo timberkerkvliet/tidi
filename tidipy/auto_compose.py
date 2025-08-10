@@ -1,11 +1,10 @@
 import builtins
-import inspect
 from typing import Type, Optional
 
 from .auto_factory import AutoFactory
 from .composer import Composer
-from .context_filter import parse_context_filter
 from .composer_repository import ComposerRepository
+from .context_filter import parse_context_filter
 from .scope_type import parse_scope_type
 
 

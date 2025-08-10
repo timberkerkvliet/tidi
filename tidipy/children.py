@@ -4,6 +4,7 @@ from typing import Protocol, Optional, TypeVar, Generic
 class HasId(Protocol):
     def get_id(self) -> str: ...
 
+
 T = TypeVar('T', bound=HasId)
 
 
@@ -12,11 +13,7 @@ class Children(Generic[T]):
         self._value = value
         self._children = children
 
-
-    def add_child(
-        self,
-        child: T
-    ):
+    def add_child(self, child: T):
         self._children[child.get_id()] = child
 
     def find_descendant(self, node_id: str) -> Optional[T]:
