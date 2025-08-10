@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class ScopeType(ABC):
     @abstractmethod
     def supports_storing(self) -> bool:
-        pass
+        """Indicates whether scope type supports storing"""
 
 
 @dataclass(frozen=True)

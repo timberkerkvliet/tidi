@@ -21,9 +21,6 @@ class ScopeContext:
         return context.add(self) == context
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, ScopeContext):
-            return False
-
         return self._values == other.values()
 
     def values(self) -> dict[str, str]:
