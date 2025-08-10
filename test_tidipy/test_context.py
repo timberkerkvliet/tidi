@@ -32,7 +32,7 @@ class TestContext(TestCase):
 
     def test_cannot_resolve_with_multiple_candidates(self):
         with self.assertRaises(Exception):
-            get_resolver()(StringGenerator)
+            get_resolver('app')(StringGenerator)
 
     def test_can_resolve_specific(self):
         ensure_scope(scope_id='app', scope_type='app', context={'environment': 'prod'})
