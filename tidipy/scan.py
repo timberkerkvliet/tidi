@@ -24,15 +24,14 @@ def scan(package):
     package_name = package.__name__
 
     try:
-        mod = importlib.import_module(package_name)
-        yield_mods = [mod]
-    except Exception as e:
-        yield_mods = []
+        module = importlib.import_module(package_name)
+        modules = [module]
+    except Exception:
+        modules = []
 
-    # Add all submodules
-    yield_mods += list(walk_modules(package_path, package_name))
+    modules += list(walk_modules(package_path, package_name))
 
-    for mod in yield_mods:
-        for name, obj in inspect.getmembers(mod):
+    for module in modules:
+        for name, obj in inspect.getmembers(module):
             if isinstance(obj, Composer):
                 ComposerRepository.add_composer(obj)

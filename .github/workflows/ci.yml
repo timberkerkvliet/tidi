@@ -43,7 +43,7 @@ jobs:
         run: coverage run -m unittest
 
       - name: Coverage report
-        run: coverage report --fail-under=95
+        run: coverage report --fail-under=95 --show-missing
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
