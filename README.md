@@ -1,5 +1,10 @@
 # TiDIpy
 
+[![Build](https://github.com/timberkerkvliet/tidipy/actions/workflows/ci.yml/badge.svg)](https://github.com/timberkerkvliet/tidipy/actions)
+[![Coverage](https://codecov.io/gh/timberkerkvliet/tidipy/branch/main/graph/badge.svg)](https://codecov.io/gh/timberkerkvliet/tidipy)
+[![PyPI](https://img.shields.io/pypi/v/tidipy.svg)](https://pypi.org/project/tidipy/)
+
+
 ## Index
 
 - [Intro](#intro)  
