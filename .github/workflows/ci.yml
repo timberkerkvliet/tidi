@@ -6,13 +6,13 @@ on:
       - main  # or whichever branch you want to watch
 
 jobs:
-  test:
+  test-legacy-python:
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v3
@@ -23,5 +23,28 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run tests
-        run: |
-          python -m unittest
+        run: python -m unittest
+
+  test-latest-python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install coverage
+        run: pip install coverage
+
+      - name: Run tests
+        run: coverage run -m unittest
+
+      - run: coverage-badge -o coverage.svg -f
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-badge
+          path: coverage.svg
+
