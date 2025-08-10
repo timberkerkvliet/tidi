@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from test_tidipy import autocompose_composition
-from test_tidipy.autocompose_composition import PointWrapper, Point, PointWrapperWrapper, EmptyInit
+from test_tidipy.autocompose_composition import PointWrapper, Point, PointWrapperWrapper, EmptyInit, UnTypedInit
 from tidipy import scan, get_resolver, reset, auto_compose, ensure_scope
 
 
@@ -66,3 +66,9 @@ class TestAutoCompose(TestCase):
             auto_compose(PointWrapper, scope_type='app')
         except Exception:
             self.fail()
+
+    def test_can_not_auto_compose_untyped_init(self):
+        auto_compose(UnTypedInit)
+        resolver = get_resolver()
+        with self.assertRaises(Exception):
+            resolver(UnTypedInit)

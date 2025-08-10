@@ -32,3 +32,8 @@ class PointWrapperWrapper:
 class EmptyInit:
     def hey(self) -> str:
         return 'hey'
+
+
+class UnTypedInit:
+    def __init__(self, hoi):
+        self._hoi = hoi
