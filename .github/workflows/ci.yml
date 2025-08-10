@@ -6,7 +6,7 @@ on:
       - main  # or whichever branch you want to watch
 
 jobs:
-  test-legacy-python:
+  test-backwards-compatibility:
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,7 +25,7 @@ jobs:
       - name: Run tests
         run: python -m unittest
 
-  test-latest-python:
+  test:
     runs-on: ubuntu-latest
 
     steps:
