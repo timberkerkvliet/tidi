@@ -12,11 +12,7 @@ class AutoFactory:
         return self._dependency_type == other._dependency_type
 
     def __call__(self, resolver: Resolver):
-        try:
-            sig = inspect.signature(self._dependency_type)
-        except ValueError:
-            return self._dependency_type()
-
+        sig = inspect.signature(self._dependency_type)
         params = list(sig.parameters.values())
 
         args = []
