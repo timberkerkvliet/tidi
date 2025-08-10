@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-from typing import Optional, Type, TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from .resolver import Resolver
-    from .dependency import Composer
+from typing import Optional, Type, Any
+from .resolver import Resolver
+from .composer import Composer
 
 
 class DependencyBag:

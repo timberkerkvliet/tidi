@@ -5,6 +5,7 @@ from typing import Optional
 from .children import Children
 from .composer import Composer
 from .dependency_bag import DependencyBag
+from .resolve_from_dependency_bag import ResolveFromDependencyBag
 from .resolver import Resolver
 from .scope_context import ScopeContext
 from .scope_type import ScopeType, Transient
@@ -28,8 +29,8 @@ class Scope:
         self._resolver = self._create_resolver()
         self._validate()
 
-    def _create_resolver(self) -> Resolver:
-        return Resolver(
+    def _create_resolver(self) -> ResolveFromDependencyBag:
+        return ResolveFromDependencyBag(
             parent=self._parent.resolver() if self._parent is not None else None,
             dependency_bag=DependencyBag([
                 composer

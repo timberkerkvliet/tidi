@@ -7,7 +7,6 @@ from .context_filter import ContextFilter
 from .resolver import Resolver
 from .scope_type import ScopeType, RootType
 
-
 @dataclass(frozen=True)
 class Composer:
     id: str

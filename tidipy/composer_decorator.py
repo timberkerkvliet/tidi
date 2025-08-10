@@ -2,16 +2,11 @@ from __future__ import annotations
 
 import builtins
 import inspect
-from typing import TypeVar, Callable, get_type_hints, Optional
+from typing import Callable, get_type_hints, Optional
 
-from .context_filter import parse_context_filter
 from .composer import Composer
-from .resolver import Resolver
+from .context_filter import parse_context_filter
 from .scope_type import parse_scope_type
-
-T = TypeVar('T')
-
-FactoryMethod = Callable[[Resolver], T]
 
 
 def composer(
