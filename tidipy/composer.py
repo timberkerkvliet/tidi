@@ -15,9 +15,6 @@ class Composer:
     factory: Callable[[Resolver], Any]
     dependency_type: Type
 
-    def get_id(self) -> str:
-        return self.id
-
     def __hash__(self) -> int:
         return hash(self.id)
 
