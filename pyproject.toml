@@ -15,4 +15,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-exclude = ["test_tidi"]
+exclude = ["test_tidipy"]
+
+[tool.coverage.run]
+omit = [
+    "test_tidipy/*"
+]
