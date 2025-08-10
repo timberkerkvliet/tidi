@@ -21,3 +21,9 @@ exclude = ["test_tidipy"]
 omit = [
     "test_tidipy/*"
 ]
+
+[tool.mutmut]
+paths_to_mutate = ["tidipy/"]
+tests_dir = ["test_tidipy/"]
+also_copy = ["test_tidipy/"]
+runner = "python -m unittest"
