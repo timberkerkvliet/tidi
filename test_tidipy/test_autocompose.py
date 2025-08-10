@@ -54,8 +54,15 @@ class TestAutoCompose(TestCase):
         with self.assertRaises(Exception):
             auto_compose(PointWrapper, environment='test')
 
-    def test_can_add_conditions_to_root_scoped_dependency(self):
+    def test_can_add_conditions_to_non_root_scoped_dependency(self):
         try:
             auto_compose(PointWrapper, scope_type='iets', environment='test')
+        except Exception:
+            self.fail()
+
+    def test_can_auto_compose_twice(self):
+        auto_compose(PointWrapper, scope_type='app')
+        try:
+            auto_compose(PointWrapper, scope_type='app')
         except Exception:
             self.fail()

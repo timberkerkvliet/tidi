@@ -18,12 +18,10 @@ class AutoFactory:
         try:
             sig = inspect.signature(self._dependency_type)
         except ValueError:
-            # Built-in types may raise ValueError
             return self._dependency_type()
 
         params = list(sig.parameters.values())
 
-        # Skip 'self' if it's an instance method (e.g., normal class __init__)
         if params and params[0].name == 'self':
             params = params[1:]
 
