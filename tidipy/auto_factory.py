@@ -19,9 +19,6 @@ class AutoFactory:
 
         params = list(sig.parameters.values())
 
-        if params and params[0].name == 'self':
-            params = params[1:]
-
         args = []
         for param in params:
             if param.annotation is inspect.Parameter.empty:
