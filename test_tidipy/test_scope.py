@@ -59,6 +59,16 @@ class TestScope(TestCase):
         with self.assertRaises(Exception):
             ensure_scope(scope_id='tenant-a', scope_type='iets')
 
+
+    def test_ensure_with_other_parent(self):
+        ensure_scope(scope_id='parent-a', scope_type='parent')
+        ensure_scope(scope_id='parent-b', scope_type='parent')
+        ensure_scope(scope_id='child', scope_type='child', parent_id='parent-a')
+
+        with self.assertRaises(Exception):
+            ensure_scope(scope_id='child', scope_type='child', parent_id='parent-b')
+
+
     def test_destroy_scope(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
         clear_scope(scope_id='tenant-a')
@@ -91,7 +101,6 @@ class TestScope(TestCase):
         second_object = get_resolver()(Hey)
 
         self.assertNotEqual(id(first_object), id(second_object))
-
 
     def test_cannot_ensure_parent_scope_with_context_after_nesting(self):
         ensure_scope(scope_id='parent', scope_type='parent')
