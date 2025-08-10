@@ -69,7 +69,7 @@ class TestScope(TestCase):
             ensure_scope(scope_id='child', scope_type='child', parent_id='parent-b')
 
 
-    def test_destroy_scope(self):
+    def test_clear_scope(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
         clear_scope(scope_id='tenant-a')
 
@@ -129,13 +129,22 @@ class TestScope(TestCase):
         self.assertEqual(User(id='user'), user_result)
         self.assertEqual(Hey(age=17), hey_result)
 
-    def test_destroy_child_scopes(self):
+    def test_clear_parent_scope(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
         ensure_scope(scope_id='request-b', scope_type='request', parent_id='tenant-a')
         clear_scope('tenant-a')
 
         with self.assertRaises(Exception):
             get_resolver('request-b')
+
+    def test_clear_grandchild_scope(self):
+        ensure_scope(scope_id='app', scope_type='app')
+        ensure_scope(scope_id='tenant', scope_type='tenant', parent_id='app')
+        ensure_scope(scope_id='request', scope_type='request', parent_id='tenant')
+        clear_scope('request')
+
+        with self.assertRaises(Exception):
+            get_resolver('request')
 
     def test_cannot_nest_same_type(self):
         ensure_scope(scope_id='tenant-a', scope_type='tenant')
