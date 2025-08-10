@@ -23,12 +23,8 @@ def scan(package):
     package_path = Path(package.__file__).parent
     package_name = package.__name__
 
-    try:
-        module = importlib.import_module(package_name)
-        modules = [module]
-    except Exception:
-        modules = []
-
+    module = importlib.import_module(package_name)
+    modules = [module]
     modules += list(walk_modules(package_path, package_name))
 
     for module in modules:
