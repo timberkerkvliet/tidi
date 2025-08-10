@@ -16,8 +16,6 @@ def auto_compose(
     scope_type: str = 'root',
     **kwargs
 ):
-    if not inspect.isclass(dependency_type):
-        raise ValueError
     factory = AutoFactory(dependency_type)
     composer = Composer(
             id=str(builtins.id(dependency_type)) if id is None else id,
