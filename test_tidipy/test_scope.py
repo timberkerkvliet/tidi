@@ -137,6 +137,14 @@ class TestScope(TestCase):
         with self.assertRaises(Exception):
             get_resolver('request-b')
 
+    def test_clear_child_scope(self):
+        ensure_scope(scope_id='app', scope_type='app')
+        ensure_scope(scope_id='tenant', scope_type='tenant', parent_id='app')
+        clear_scope('tenant')
+
+        with self.assertRaises(Exception):
+            get_resolver('tenant')
+
     def test_clear_grandchild_scope(self):
         ensure_scope(scope_id='app', scope_type='app')
         ensure_scope(scope_id='tenant', scope_type='tenant', parent_id='app')
