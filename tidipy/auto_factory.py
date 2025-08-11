@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 from typing import Type
 
@@ -8,7 +10,7 @@ class AutoFactory:
     def __init__(self, dependency_type: Type):
         self._dependency_type = dependency_type
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: AutoFactory) -> bool:
         return self._dependency_type == other._dependency_type
 
     def __call__(self, resolver: Resolver):
